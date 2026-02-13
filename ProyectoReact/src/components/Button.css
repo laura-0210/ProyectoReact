@@ -31,6 +31,12 @@
   box-shadow: 0 5px 0 #ce93d8;
 }
 
+.rojo-button {
+  background-color: #da4f66 !important;
+  color: #7c303f;
+  box-shadow: 0 5px 0 #ce93d8;
+}
+
 .cute-button:disabled {
   background-color: #f5f5f5 !important;
   color: #d1d1d1 !important;

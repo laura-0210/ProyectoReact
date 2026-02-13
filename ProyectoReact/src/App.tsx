@@ -1,35 +1,33 @@
-import { useState, useEffect } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
+import { useState, useEffect } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
+import Button from "./components/Button";
 
-import { StatusScreen } from './components/StatusScreen';
-import Controls from './components/Controls';
+import { StatusScreen } from "./components/StatusScreen";
+import Controls from "./components/Controls";
 
 // Imágenes
-import imgFeliz from './assets/sprites/happy.gif';
-import imgEnfadado from './assets/sprites/enfadado.jpeg';
-import imgTriste from './assets/sprites/triste.jpeg';
-import imgNeutral from './assets/sprites/neutral.jpeg';
-import imgDormir from './assets/sprites/dormir.jpeg';
-import imgMuerteCaida from './assets/sprites/muerte2.jpeg';
-import imgMuerteFinal from './assets/sprites/muerte3.jpeg';
-
+import imgFeliz from "./assets/sprites/happy.gif";
+import imgEnfadado from "./assets/sprites/enfadado.jpeg";
+import imgTriste from "./assets/sprites/triste.jpeg";
+import imgNeutral from "./assets/sprites/neutral.jpeg";
+import imgDormir from "./assets/sprites/dormir.jpeg";
+import imgMuerteCaida from "./assets/sprites/muerte2.jpeg";
+import imgMuerteFinal from "./assets/sprites/muerte3.jpeg";
 
 const API_URL = "http://localhost:8000";
 
 function App() {
-  
   const [stats, setStats] = useState({
     health: 100,
     hunger: 20,
     happiness: 100,
     durmiendo: false,
-    is_alive: true
+    is_alive: true,
   });
 
   const [muerteFinalizada, setMuerteFinalizada] = useState(false);
 
-  
   const fetchEstado = async () => {
     try {
       const response = await fetch(`${API_URL}/estado`);
@@ -39,32 +37,28 @@ function App() {
       console.error("Error conectando con el backend:", error);
     }
   };
-    
+
   useEffect(() => {
     fetchEstado();
   }, []);
- 
+
   useEffect(() => {
     const timer = setInterval(async () => {
       try {
-       
         const response = await fetch(`${API_URL}/tick`, { method: "POST" });
         const data = await response.json();
-        setStats(data); 
+        setStats(data);
 
-        
         if (!data.is_alive && !muerteFinalizada) {
-           setTimeout(() => setMuerteFinalizada(true), 3000);
+          setTimeout(() => setMuerteFinalizada(true), 3000);
         }
       } catch (error) {
         console.error("El servidor está apagado o no responde");
       }
-    }, 2000); 
+    }, 2000);
 
     return () => clearInterval(timer);
   }, [muerteFinalizada]);
-
- 
 
   const comer = async () => {
     const res = await fetch(`${API_URL}/comer`, { method: "POST" });
@@ -91,7 +85,6 @@ function App() {
     setMuerteFinalizada(false);
   };
 
-
   const getCurrentImage = () => {
     if (stats.health <= 0) {
       if (muerteFinalizada) return imgMuerteFinal;
@@ -113,14 +106,16 @@ function App() {
         hunger={stats.hunger}
         happiness={stats.happiness}
         petImage={getCurrentImage()}
-        onTick={() => {}} 
+        onTick={() => {}}
       />
 
-
       {!stats.is_alive ? (
-        <button className="btn btn-danger mt-3" onClick={revivir}>
-          REVIVIR ❤️
-        </button>
+        <Button
+          texto="Revivir❤️"
+          color="rojo-button"
+          onClick={revivir}
+          desactivado={false}
+        />
       ) : (
         <Controls
           comer={comer}
