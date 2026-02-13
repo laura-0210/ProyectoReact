@@ -99,7 +99,7 @@ function App() {
 
   return (
     <div className="app-container">
-      <h1>MI TAMAGOCHI </h1>
+      <h1>GATITO VIRTUAL</h1>
 
       <StatusScreen
         health={stats.health}
