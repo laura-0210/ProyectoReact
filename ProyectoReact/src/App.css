@@ -45,3 +45,96 @@ h1 {
   line-height: 1.5;
   letter-spacing: 1px;
 }
+
+/* --- Menú de Avatares Cuqui --- */
+.avatar-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Fondo oscuro transparente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  backdrop-filter: blur(2px);
+}
+
+.avatar-menu {
+  background: #fff0f5; /* Rosa muy clarito */
+  border: 4px solid #f48fb1;
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.avatar-menu h3 {
+  color: #880e4f;
+  font-family: 'Fredoka', sans-serif;
+  margin-bottom: 15px;
+}
+
+.avatar-grid {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.avatar-option {
+  background: white;
+  border: 3px solid #e1bee7;
+  border-radius: 15px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100px;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-option:hover {
+  transform: translateY(-5px);
+  border-color: #ba68c8;
+  box-shadow: 0 5px 15px rgba(186, 104, 200, 0.3);
+}
+
+.avatar-option.selected {
+  border-color: #4caf50;
+  background-color: #e8f5e9;
+  box-shadow: 0 0 10px #4caf50;
+}
+
+.avatar-name {
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #555;
+}
+
+/* --- Truco para recortar el Sprite del Drácula --- */
+.preview-dracula {
+  width: 45px;   /* Ancho de un solo gato aprox */
+  height: 45px;
+  object-fit: none; /* No estirar la imagen */
+  object-position: 0 0; /* Mostrar solo el primer gato de la izquierda */
+  image-rendering: pixelated; /* Que se vea nítido el pixel art */
+  transform: scale(1.5); /* Hacerlo un poquito más grande */
+}
+
+.preview-normal {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+/* Animación de entrada */
+@keyframes popIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

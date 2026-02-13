@@ -2,7 +2,7 @@
 
 
 .gameboy-screen {
-  background-color: #9bbc0f; 
+  background-color: #fff9c4;
   border: 6px solid #0f380f;
   border-radius: 8px;
   padding: 20px;
@@ -14,6 +14,7 @@
   box-shadow: inset 0 0 25px rgba(0,0,0,0.4);
   
   display: flex;
+  
   flex-direction: column;
   gap: 12px;
 }
@@ -74,4 +75,39 @@
 @keyframes parpadeo {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.6; }
+}
+/* Estilo base para las imágenes normales (JPEGs/GIFs simples) */
+.pixel-sprite {
+  width: 140px;  /* Tamaño del personaje en pantalla */
+  height: 140px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+/* --- MODO DRÁCULA (Sprite Sheet) --- */
+.dracula-anim {
+  /* 1. Definimos el tamaño de UN solo cuadro */
+  width: 120px; 
+  height: 120px;
+
+  /* 2. Configuración del fondo */
+  background-repeat: no-repeat;
+  
+  /* IMPORTANTE: Como hay 6 frames, el ancho total es 600% */
+  background-size: 600% 100%; 
+  
+  /* 3. La Animación */
+  /* steps(5) porque se mueve 5 veces para llegar al final (0 -> 1 -> 2 -> 3 -> 4 -> 5) */
+  /* Si ves que salta raro, prueba steps(6) */
+  animation: sprite-play 0.8s steps(5) infinite;
+}
+
+@keyframes sprite-play {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    /* Movemos el fondo hacia la izquierda hasta el 100% de su longitud */
+    background-position: 100% 0;
+  }
 }
