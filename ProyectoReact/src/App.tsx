@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
+import { useState, useEffect } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
+
 
 import { StatusScreen } from './components/StatusScreen';
 import Controls from './components/Controls';
@@ -21,13 +22,12 @@ import imgDracula from './assets/sprites/draculacat.png';
 const API_URL = "http://localhost:8000";
 
 function App() {
-  
   const [stats, setStats] = useState({
     health: 100,
     hunger: 20,
     happiness: 100,
     durmiendo: false,
-    is_alive: true
+    is_alive: true,
   });
 
   const [muerteFinalizada, setMuerteFinalizada] = useState(false);
@@ -45,25 +45,25 @@ function App() {
       console.error("Error conectando con el backend:", error);
     }
   };
-    
+
   useEffect(() => {
     fetchEstado();
   }, []);
- 
+
   useEffect(() => {
     const timer = setInterval(async () => {
       try {
         const response = await fetch(`${API_URL}/tick`, { method: "POST" });
         const data = await response.json();
-        setStats(data); 
+        setStats(data);
 
         if (!data.is_alive && !muerteFinalizada) {
-           setTimeout(() => setMuerteFinalizada(true), 3000);
+          setTimeout(() => setMuerteFinalizada(true), 3000);
         }
       } catch (error) {
         console.error("El servidor está apagado o no responde");
       }
-    }, 2000); 
+    }, 2000);
 
     return () => clearInterval(timer);
   }, [muerteFinalizada]);
@@ -118,7 +118,7 @@ function App() {
 
   return (
     <div className="app-container">
-      <h1>MI TAMAGOCHI </h1>
+      <h1>GATITO VIRTUAL</h1>
 
       <StatusScreen
         health={stats.health}
@@ -141,9 +141,12 @@ function App() {
       </div>
 
       {!stats.is_alive ? (
-        <button className="btn btn-danger mt-3" onClick={revivir}>
-          REVIVIR ❤️
-        </button>
+        <Button
+          texto="Revivir❤️"
+          color="rojo-button"
+          onClick={revivir}
+          desactivado={false}
+        />
       ) : (
         <Controls
           comer={comer}

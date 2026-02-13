@@ -22,9 +22,9 @@ export const StatusScreen = ({ health, hunger, happiness, petImage, onTick }: St
   }, [onTick]);
 
   const getBgClass = (val: number) => {
-    if (val > 50) return 'bg-success'; 
-    if (val > 20) return 'bg-warning'; 
-    return 'bg-danger'; 
+    if (val > 50) return "bg-success";
+    if (val > 20) return "bg-warning";
+    return "bg-danger";
   };
 
   return (
