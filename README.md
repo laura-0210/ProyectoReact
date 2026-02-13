@@ -54,6 +54,8 @@ No es necesario instalar Python ni Node.js manualmente.
 ```bash
 git clone https://github.com/TU_USUARIO/TU_REPO.git
 cd TU_REPO
+cd ProyectoReact/ProyectoReact
+npm install
 ```
 
 ---
