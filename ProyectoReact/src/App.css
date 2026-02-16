@@ -1,38 +1,27 @@
 /* src/App.css */
-.avatar-menu {
-  background: white;
-  padding: 25px;
-  border-radius: 20px;
-  border: 4px solid #f48fb1;
-  text-align: center;
-  min-width: 350px; /* Un poco más ancho para los 3 */
-}
-
-.avatar-grid {
+.main-wrapper {
   display: flex;
-  gap: 15px;
   justify-content: center;
-  margin-top: 15px;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  background-color: #ffc2d1; /* Fondo rosa suave */
 }
 
-.avatar-option {
-  cursor: pointer;
-  padding: 10px;
-  border: 2px solid transparent;
-  transition: all 0.2s;
-  flex: 1;
+.app-container {
+  background-color: #fffcf0;
+  padding: 30px;
+  border-radius: 50px;
+  border: 6px solid #9c8475;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 10px 0 #9c8475; /* Efecto 3D de panel */
 }
 
-.avatar-option img {
-  width: 60px;
-  height: 60px;
-  object-fit: contain;
-  image-rendering: pixelated;
-  margin-bottom: 5px;
-}
-
-.avatar-option span {
-  display: block;
-  font-size: 10px;
+h1 {
   font-family: "Press Start 2P", cursive;
+  font-size: 16px;
+  color: #9c8475;
+  margin-bottom: 20px;
 }

@@ -1,72 +1,73 @@
 /* src/components/StatusScreen.css */
 @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 
-/* --- 1. PANTALLA TIPO GAMEBOY --- */
 .gameboy-screen {
-  background-color: #d4b094;
+  background-color: #d4b094; /* Color hueso retro */
   border: 6px solid #5b6a4a;
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 20px;
-  width: 350px; /* Un pelín más ancho para que respire */
+  width: 320px;
   font-family: "Press Start 2P", cursive, sans-serif;
   color: #0f380f;
   box-shadow: inset 0 0 25px #ffffffa6;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 15px;
 }
 
-/* --- 2. CONTENEDOR DEL GATO --- */
 .sprite-container {
-  background-color: #b4d1a4;
+  background-color: #b4d1a4; /* Verde GameBoy clásico */
   border: 3px solid #5b6a4a;
-  height: 200px; /* Más alto para que quepan grandes */
+  height: 200px; /* Suficiente espacio para que sean grandes */
   display: flex;
-  justify-content: center; /* Centrado horizontal total */
-  align-items: center; /* Centrado vertical total */
+  justify-content: center; /* Centrado horizontal */
+  align-items: center; /* Centrado vertical */
   overflow: hidden;
   position: relative;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .pixel-sprite {
-  width: 180px; /* Forzamos el tamaño grande */
-  height: 180px; /* Forzamos el tamaño grande */
-  object-fit: contain; /* Evita que se deformen */
-  image-rendering: pixelated; /* Mantiene los píxeles nítidos */
+  width: 170px; /* Tamaño grande para que se aprecie el pixel art */
+  height: 170px;
+  object-fit: contain; /* No deforma la imagen */
+  image-rendering: pixelated; /* Evita que se vea borroso */
   image-rendering: crisp-edges;
   display: block;
 }
 
-/* --- 4. TEXTOS Y ALERTAS --- */
+/* --- ALERTAS Y BARRAS --- */
+.alert-area {
+  min-height: 40px; /* Evita que los elementos de abajo salten cuando sale un aviso */
+}
+
+.pixel-alert {
+  font-size: 8px;
+  border: 2px solid #5b6a4a;
+  background-color: #ffe5ec;
+  padding: 6px;
+  text-align: center;
+  margin-bottom: 5px;
+  animation: parpadeo 1s infinite;
+}
+
+.stat-row {
+  margin-bottom: 8px;
+}
+
 .pixel-text {
   font-size: 10px;
   margin-bottom: 4px;
   display: block;
 }
 
-.pixel-alert {
-  font-size: 10px;
-  border: 2px solid #5b6a4a;
-  background-color: #ffe5ec;
-  padding: 8px;
-  text-align: center;
-  /* Animación de parpadeo para avisos urgentes */
-  animation: parpadeo 1s infinite;
-}
-
-/* --- 5. BARRAS DE PROGRESO (Stats) --- */
 .progress {
   border-radius: 0;
   background-color: #fff9c4;
   border: 2px solid #5b6a4a;
-  height: 20px;
+  height: 18px;
 }
 
-.progress-bar {
-  transition: width 0.5s ease-in-out;
-}
-
-/* --- 6. ANIMACIONES --- */
 @keyframes parpadeo {
   0%,
   100% {
