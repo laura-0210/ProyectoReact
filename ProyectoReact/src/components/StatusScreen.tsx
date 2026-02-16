@@ -21,9 +21,8 @@ export const StatusScreen = ({
   skin,
   onTick,
 }: StatusScreenProps) => {
-  // Detectamos si es Drácula caminando (basado en la skin, no solo en el nombre del archivo)
-  const isWalkingDracula =
-    skin === "dracula" && petImage.includes("draculacat");
+  // Detección robusta del vampiro
+  const isDracula = petImage && petImage.includes("draculacat");
 
   useEffect(() => {
     const timer = setInterval(() => onTick(), 2000);
@@ -39,14 +38,26 @@ export const StatusScreen = ({
   return (
     <div className="gameboy-screen">
       <div className="sprite-container">
-        {isWalkingDracula ? (
-          /* USAMOS LA TÉCNICA DEL MENÚ: Ventana (div) + Imagen (img) */
-          <div className="sprite-dracula-large">
-            <img src={petImage} alt="Vampiro Animado" />
-          </div>
+        {isDracula ? (
+          /* APLICAMOS EL ESTILO DIRECTO */
+          <div
+            className="preview-dracula-animated"
+            style={{ backgroundImage: `url(${petImage})` }}
+          />
         ) : (
-          /* IMAGEN NORMAL: Para Tama original o Drácula muerto/durmiendo */
           <img src={petImage} alt="Mascota" className="pixel-sprite" />
+        )}
+      </div>
+
+      <div className="alert-area">
+        {hunger > 80 && (
+          <div className="alert alert-danger pixel-alert">¡HAMBRE! 🍖</div>
+        )}
+        {happiness < 20 && (
+          <div className="alert alert-warning pixel-alert">TRISTE 😢</div>
+        )}
+        {health < 20 && (
+          <div className="alert alert-danger pixel-alert">¡SALUD BAJA! 🚑</div>
         )}
       </div>
 

@@ -113,51 +113,11 @@ h1 {
    3. ANIMACIÓN DEL VAMPIRO (MÉTODO VIEWPORT)
    ======================================================== */
 
-/* La Ventana (Ojo de cerradura) */
-.sprite-dracula-large {
-  width: 64px !important; /* Ajusta este valor si el gato es más ancho/estrecho */
-  height: 64px !important; /* Ajusta este valor al alto de un gato */
-  overflow: hidden; /* ESTO es lo que esconde a los otros 5 gatos */
-  position: relative;
-  display: block;
-  margin: 0 auto;
-  background: transparent;
-}
-
-/* 2. La TIRA (Los 6 gatitos juntos) */
-.sprite-dracula-large img {
-  display: block;
-  height: 64px !important;
-  width: auto !important; /* Deja que el navegador calcule el ancho total */
-  image-rendering: pixelated;
-
-  /* La animación mueve la tira exactamente su propio ancho */
-  animation: caminar-vampiro 0.8s steps(6) infinite !important;
-}
-
-@keyframes caminar-vampiro {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-100%);
-  } /* Mueve la tira entera de 6 gatos */
-}
-
-/* Ajuste para que el contenedor verde no se vea vacío */
-.sprite-container {
-  height: 150px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #b4d1a4;
-  border: 3px solid #0f380f;
-}
-
-/* Gifs normales */
-.pixel-sprite {
-  width: 120px;
-  height: 120px;
-  object-fit: contain;
+.preview-dracula-animated {
+  width: 50px;
+  height: 50px;
+  background-size: 600% 100%;
+  background-repeat: no-repeat;
+  background-position: 0 0;
   image-rendering: pixelated;
 }
