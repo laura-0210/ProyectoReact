@@ -16,7 +16,7 @@ export const StatusScreen = ({
   petImage,
   onTick,
 }: StatusScreenProps) => {
-  // Detectamos si es la imagen del drácula (más robusto)
+  // Detectamos si es la imagen del drácula
   const isDracula =
     petImage &&
     (petImage.includes("dracula") ||
@@ -36,32 +36,28 @@ export const StatusScreen = ({
     return "bg-danger";
   };
 
-  // DEBUG: Descomentar para ver qué imagen se está cargando
-  // console.log('petImage:', petImage);
-  // console.log('isDracula:', isDracula);
+  console.log('🐱 petImage:', petImage);
+  console.log('🧛 isDracula:', isDracula);
 
   return (
     <div className="gameboy-screen">
       <div className="sprite-container">
         {isDracula ? (
-          // VERSIÓN DRÁCULA: Sprite animado
+          // ✅ DRÁCULA: SOLO clase CSS, SIN estilos inline que interfieran
           <div
             className="pixel-sprite dracula-anim"
             style={{
               backgroundImage: `url(${petImage})`,
-              // Añadimos esto para asegurar que carga
-              backgroundSize: "600% 100%",
-              backgroundRepeat: "no-repeat",
-              imageRendering: "pixelated",
+              // ⚠️ NO pongas backgroundSize, backgroundRepeat ni animation aquí
+              // Deja que el CSS haga su trabajo
             }}
           />
         ) : (
-          // VERSIÓN NORMAL: Imagen estática
+          // ✅ NORMAL: <img> tradicional
           <img
             src={petImage}
             alt="Mascota"
             className="pixel-sprite"
-            style={{ imageRendering: "pixelated" }}
           />
         )}
       </div>
