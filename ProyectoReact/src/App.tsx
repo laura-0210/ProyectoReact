@@ -2,10 +2,9 @@ import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
-
 import { StatusScreen } from './components/StatusScreen';
 import Controls from './components/Controls';
-import Button from './components/Button'; // Importamos tu botón cuqui
+import Button from './components/Button';
 
 // Imágenes Originales
 import imgFeliz from './assets/sprites/happy.gif';
@@ -16,7 +15,7 @@ import imgDormir from './assets/sprites/dormir.jpeg';
 import imgMuerteCaida from './assets/sprites/muerte2.jpeg';
 import imgMuerteFinal from './assets/sprites/muerte3.jpeg';
 
-// Nueva Imagen Drácula
+// Nueva Imagen Drácula - ASEGÚRATE QUE LA RUTA ES CORRECTA
 import imgDracula from './assets/sprites/draculacat.png';
 
 const API_URL = "http://localhost:8000";
@@ -31,10 +30,14 @@ function App() {
   });
 
   const [muerteFinalizada, setMuerteFinalizada] = useState(false);
-  
-  // --- NUEVO: ESTADOS PARA EL AVATAR ---
   const [skin, setSkin] = useState<'original' | 'dracula'>('original');
   const [showMenu, setShowMenu] = useState(false);
+
+  // DEBUG: Descomentar para verificar que las imágenes se cargan
+  useEffect(() => {
+    console.log('🖼️ Imagen Drácula cargada:', imgDracula);
+    console.log('🎨 Skin actual:', skin);
+  }, [skin]);
 
   const fetchEstado = async () => {
     try {
@@ -93,18 +96,16 @@ function App() {
     setMuerteFinalizada(false);
   };
 
-  // --- LÓGICA DE IMAGEN MEJORADA ---
+  // Función para obtener la imagen actual
   const getCurrentImage = () => {
-    // Si elegimos DRACULA, mostramos su sprite sheet
-    // (Nota: Como es una tira, podrías necesitar CSS extra en StatusScreen 
-    // si quieres animarlo, pero por ahora lo mostramos tal cual o la primera frame)
+    // Si el skin es Drácula, siempre devolvemos su imagen
     if (skin === 'dracula') {
-        // Si está muerto, podrías mostrar otra cosa, pero por ahora devolvemos el drácula
-        if (stats.health <= 0) return imgMuerteFinal; 
-        return imgDracula; 
+      // Incluso si está muerto, podrías mostrar el drácula
+      // O puedes hacer una lógica especial aquí
+      return imgDracula;
     }
 
-    // Lógica Original
+    // Lógica Original para las demás skins
     if (stats.health <= 0) {
       if (muerteFinalizada) return imgMuerteFinal;
       return imgMuerteCaida;
@@ -125,19 +126,17 @@ function App() {
         hunger={stats.hunger}
         happiness={stats.happiness}
         petImage={getCurrentImage()}
-        // Pasamos una clase extra si es dracula para recortarlo en la pantalla principal también
-        // (Esto es un truco rápido, idealmente editarías StatusScreen también)
         onTick={() => {}} 
       />
 
-      {/* --- BOTÓN PARA ABRIR EL MENÚ DE AVATAR --- */}
+      {/* Botón para cambiar avatar */}
       <div style={{ marginTop: '10px' }}>
-          <Button 
-            texto="🔄 Cambiar Avatar" 
-            color="lila-button" 
-            onClick={() => setShowMenu(true)} 
-            desactivado={false} 
-          />
+        <Button 
+          texto="🔄 Cambiar Avatar" 
+          color="lila-button" 
+          onClick={() => setShowMenu(true)} 
+          desactivado={false} 
+        />
       </div>
 
       {!stats.is_alive ? (
@@ -156,40 +155,59 @@ function App() {
         />
       )}
 
-      {/* --- EL MENÚ MODAL CUQUI --- */}
+      {/* Modal de selección de avatar */}
       {showMenu && (
         <div className="avatar-menu-overlay" onClick={() => setShowMenu(false)}>
-            <div className="avatar-menu" onClick={(e) => e.stopPropagation()}>
-                <h3>✨ Elige tu Mascota ✨</h3>
-                
-                <div className="avatar-grid">
-                    {/* OPCIÓN 1: ORIGINAL */}
-                    <div 
-                        className={`avatar-option ${skin === 'original' ? 'selected' : ''}`}
-                        onClick={() => { setSkin('original'); setShowMenu(false); }}
-                    >
-                        <img src={imgFeliz} alt="Original" className="preview-normal" />
-                        <span className="avatar-name">Tama</span>
-                    </div>
+          <div className="avatar-menu" onClick={(e) => e.stopPropagation()}>
+            <h3>✨ Elige tu Mascota ✨</h3>
+            
+            <div className="avatar-grid">
+              {/* Opción Original */}
+              <div 
+                className={`avatar-option ${skin === 'original' ? 'selected' : ''}`}
+                onClick={() => { 
+                  setSkin('original'); 
+                  setShowMenu(false);
+                  console.log('✅ Cambiado a: original');
+                }}
+              >
+                <img src={imgFeliz} alt="Original" className="preview-normal" />
+                <span className="avatar-name">Tama</span>
+              </div>
 
-                    {/* OPCIÓN 2: DRACULA CAT */}
-                    <div 
-                        className={`avatar-option ${skin === 'dracula' ? 'selected' : ''}`}
-                        onClick={() => { setSkin('dracula'); setShowMenu(false); }}
-                    >
-                        {/* Aquí usamos la clase especial para recortar la tira de sprites */}
-                        <img src={imgDracula} alt="Dracula" className="preview-dracula" />
-                        <span className="avatar-name">Vampiro</span>
-                    </div>
-                </div>
-
-                <div style={{marginTop: '20px'}}>
-                    <small>¡Haz clic fuera para cerrar!</small>
-                </div>
+              {/* Opción Drácula */}
+              <div 
+                className={`avatar-option ${skin === 'dracula' ? 'selected' : ''}`}
+                onClick={() => { 
+                  setSkin('dracula'); 
+                  setShowMenu(false);
+                  console.log('✅ Cambiado a: dracula');
+                  console.log('🖼️ URL imagen:', imgDracula);
+                }}
+              >
+                {/* Preview del drácula animado */}
+                <div 
+                  className="preview-dracula"
+                  style={{ 
+                    backgroundImage: `url(${imgDracula})`,
+                    width: '50px',
+                    height: '50px',
+                    backgroundSize: '600% 100%',
+                    backgroundRepeat: 'no-repeat',
+                    imageRendering: 'pixelated',
+                    animation: 'sprite-play 0.8s steps(5) infinite'
+                  }}
+                />
+                <span className="avatar-name">Vampiro</span>
+              </div>
             </div>
+
+            <div style={{marginTop: '20px'}}>
+              <small>¡Haz clic fuera para cerrar!</small>
+            </div>
+          </div>
         </div>
       )}
-
     </div>
   );
 }

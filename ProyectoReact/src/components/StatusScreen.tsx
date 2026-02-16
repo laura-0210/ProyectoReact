@@ -11,8 +11,12 @@ interface StatusScreenProps {
 
 export const StatusScreen = ({ health, hunger, happiness, petImage, onTick }: StatusScreenProps) => {
 
-  // Detectamos si es la imagen del drácula
-  const isDracula = petImage.includes('dracula');
+  // Detectamos si es la imagen del drácula (más robusto)
+  const isDracula = petImage && (
+    petImage.includes('dracula') || 
+    petImage.includes('Dracula') ||
+    petImage.includes('draculacat')
+  );
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -27,23 +31,33 @@ export const StatusScreen = ({ health, hunger, happiness, petImage, onTick }: St
     return "bg-danger";
   };
 
+  // DEBUG: Descomentar para ver qué imagen se está cargando
+  // console.log('petImage:', petImage);
+  // console.log('isDracula:', isDracula);
+
   return (
     <div className="gameboy-screen">
       <div className="sprite-container">
         
-        {/* LÓGICA DE VISUALIZACIÓN CORREGIDA */}
         {isDracula ? (
-          // OPCIÓN A: Si es Drácula, usamos un DIV con background (Sprite Animation)
+          // VERSIÓN DRÁCULA: Sprite animado
           <div 
             className="pixel-sprite dracula-anim"
-            style={{ backgroundImage: `url(${petImage})` }}
+            style={{ 
+              backgroundImage: `url(${petImage})`,
+              // Añadimos esto para asegurar que carga
+              backgroundSize: '600% 100%',
+              backgroundRepeat: 'no-repeat',
+              imageRendering: 'pixelated'
+            }}
           />
         ) : (
-          // OPCIÓN B: Si es normal, usamos la IMG de siempre
+          // VERSIÓN NORMAL: Imagen estática
           <img 
             src={petImage} 
             alt="Mascota" 
             className="pixel-sprite" 
+            style={{ imageRendering: 'pixelated' }}
           />
         )}
 
@@ -56,7 +70,6 @@ export const StatusScreen = ({ health, hunger, happiness, petImage, onTick }: St
       </div>
 
       <div className="stats-container">
-        {/* Barras de estado (igual que antes) */}
         <div className="stat-row">
           <span className="pixel-text">SALUD</span>
           <div className="progress" style={{ height: '20px', border: '2px solid #0f380f' }}>
