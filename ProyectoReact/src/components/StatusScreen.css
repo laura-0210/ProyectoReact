@@ -31,8 +31,6 @@
   width: 120px;
   height: 120px;
   object-fit: contain;
-  
-  /* Aseguramos pixel perfect en todos los navegadores */
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;
@@ -41,46 +39,51 @@
 
 /* ===================================================
    SPRITE SHEET ANIMADO - DRÁCULA
+   SINTAXIS ROBUSTA PARA EVITAR PROBLEMAS DE MINIFICACIÓN
    =================================================== */
+
+/* ⚠️ IMPORTANTE: Usar 'from/to' en lugar de '0%/100%' 
+   para evitar que algunos minificadores rompan la animación */
+@keyframes sprite-play {
+  from {
+    background-position: 0% 0%;
+  }
+  to {
+    background-position: 100% 0%;
+  }
+}
+
+/* Prefijo webkit explícito */
+@-webkit-keyframes sprite-play {
+  from {
+    background-position: 0% 0%;
+  }
+  to {
+    background-position: 100% 0%;
+  }
+}
+
 .dracula-anim {
-  /* Tamaño de UN frame individual */
   width: 120px !important;
   height: 120px !important;
-  
-  /* Configuración del background */
   background-repeat: no-repeat !important;
-  background-size: 600% 100% !important; /* 6 frames = 600% */
-  background-position: 0 0;
-  
-  /* Pixel perfect rendering */
+  background-size: 600% 100% !important;
+  background-position: 0% 0%;
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   
-  /* LA ANIMACIÓN MÁGICA */
-  animation: sprite-play 0.8s steps(5) infinite;
+  /* Aplicamos la animación con TODOS los prefijos */
   -webkit-animation: sprite-play 0.8s steps(5) infinite;
-}
-
-/* Keyframes para la animación del sprite */
-@keyframes sprite-play {
-  from {
-    background-position: 0% 0;
-  }
-  to {
-    background-position: 100% 0;
-  }
-}
-
-/* Prefijo para Safari/webkit */
-@-webkit-keyframes sprite-play {
-  from {
-    background-position: 0% 0;
-  }
-  to {
-    background-position: 100% 0;
-  }
+  -moz-animation: sprite-play 0.8s steps(5) infinite;
+  -o-animation: sprite-play 0.8s steps(5) infinite;
+  animation: sprite-play 0.8s steps(5) infinite;
+  
+  /* Forzamos el rendering para evitar bugs de GPU */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: background-position;
 }
 
 /* ===================================================
@@ -118,14 +121,7 @@
 }
 
 @keyframes parpadeo {
-  0%, 100% { opacity: 1; }
+  from { opacity: 1; }
   50% { opacity: 0.6; }
-}
-
-/* ===================================================
-   FIX PARA VERCEL - Asegurar que los estilos inline 
-   no sobrescriban la animación
-   =================================================== */
-.dracula-anim[style] {
-  animation: sprite-play 0.8s steps(5) infinite !important;
+  to { opacity: 1; }
 }
