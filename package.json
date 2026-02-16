@@ -1,5 +1,6 @@
 {
   "devDependencies": {
-    "terser": "^5.46.0"
+    "terser": "^5.46.0",
+    "vite-plugin-css-injected-by-js": "^3.5.2"
   }
 }
