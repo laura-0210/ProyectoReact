@@ -1,15 +1,12 @@
+// src/components/StatusScreen.tsx
 import { useEffect } from "react";
 import "./StatusScreen.css";
-
-// Definimos el tipo de Skin para que TypeScript no se queje
-export type SkinType = "original" | "dracula";
 
 interface StatusScreenProps {
   health: number;
   hunger: number;
   happiness: number;
   petImage: string;
-  skin: SkinType; // Añadimos la prop skin
   onTick: () => void;
 }
 
@@ -18,17 +15,8 @@ export const StatusScreen = ({
   hunger,
   happiness,
   petImage,
-  skin,
   onTick,
 }: StatusScreenProps) => {
-  // Detección robusta del vampiro
-  const isDracula = petImage && petImage.includes("draculacat");
-
-  useEffect(() => {
-    const timer = setInterval(() => onTick(), 2000);
-    return () => clearInterval(timer);
-  }, [onTick]);
-
   const getBgClass = (val: number) => {
     if (val > 50) return "bg-success";
     if (val > 20) return "bg-warning";
@@ -38,15 +26,8 @@ export const StatusScreen = ({
   return (
     <div className="gameboy-screen">
       <div className="sprite-container">
-        {isDracula ? (
-          /* APLICAMOS EL ESTILO DIRECTO */
-          <div
-            className="preview-dracula-animated"
-            style={{ backgroundImage: `url(${petImage})` }}
-          />
-        ) : (
-          <img src={petImage} alt="Mascota" className="pixel-sprite" />
-        )}
+        {/* Usamos una etiqueta img normal para que el GIF brille */}
+        <img src={petImage} alt="Mascota" className="pixel-sprite" />
       </div>
 
       <div className="alert-area">
@@ -61,9 +42,7 @@ export const StatusScreen = ({
         )}
       </div>
 
-      {/* --- EL RESTO DE TUS ESTADÍSTICAS (Salud, Hambre...) --- */}
       <div className="stats-container">
-        {/* Mantén aquí tus filas de Salud, Hambre y Felicidad igual que las tenías */}
         <div className="stat-row">
           <span className="pixel-text">SALUD</span>
           <div className="progress">

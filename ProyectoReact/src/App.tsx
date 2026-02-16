@@ -1,3 +1,4 @@
+// src/App.tsx
 import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -6,15 +7,15 @@ import { StatusScreen } from "./components/StatusScreen";
 import Controls from "./components/Controls";
 import Button from "./components/Button";
 
-// Imágenes
-import imgFeliz from "./assets/sprites/happy.gif";
-import imgEnfadado from "./assets/sprites/enfadado.jpeg";
-import imgTriste from "./assets/sprites/triste.jpeg";
-import imgNeutral from "./assets/sprites/neutral.jpeg";
-import imgDormir from "./assets/sprites/dormir.jpeg";
-import imgMuerteCaida from "./assets/sprites/muerte2.jpeg";
-import imgMuerteFinal from "./assets/sprites/muerte3.jpeg";
-import imgDracula from "./assets/sprites/draculacat.png";
+// --- NUEVOS GIFS (Skin Original) ---
+import imgFeliz from "./assets/sprites/gatofeliz.gif";
+import imgMimir from "./assets/sprites/gatomimir.gif";
+import imgPlay from "./assets/sprites/gatoplay.gif";
+import imgTriste from "./assets/sprites/gatotriste.gif";
+import imgMuerte from "./assets/sprites/muerte3.jpeg";
+
+// --- SKIN DRÁCULA (Mantenemos la opción) ---
+import imgDracula from "./assets/sprites/draculacat.png"; // O el .gif si lo prefieres
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
@@ -27,26 +28,21 @@ function App() {
     is_alive: true,
   });
 
-  const [muerteFinalizada, setMuerteFinalizada] = useState(false);
   const [skin, setSkin] = useState<"original" | "dracula">("original");
   const [showMenu, setShowMenu] = useState(false);
+  const [isAnimatingPlay, setIsAnimatingPlay] = useState(false);
 
-  // DEBUG
+  // Lógica de sincronización con Backend
   useEffect(() => {
-    console.log("🎨 Skin actual:", skin);
-  }, [skin]);
-
-  const fetchEstado = async () => {
-    try {
-      const response = await fetch(`${API_URL}/estado`);
-      const data = await response.json();
-      setStats(data);
-    } catch (error) {
-      console.error("Error conectando con el backend:", error);
-    }
-  };
-
-  useEffect(() => {
+    const fetchEstado = async () => {
+      try {
+        const response = await fetch(`${API_URL}/estado`);
+        const data = await response.json();
+        setStats(data);
+      } catch (e) {
+        console.error("Error al conectar");
+      }
+    };
     fetchEstado();
   }, []);
 
@@ -56,54 +52,35 @@ function App() {
         const response = await fetch(`${API_URL}/tick`, { method: "POST" });
         const data = await response.json();
         setStats(data);
-
-        if (!data.is_alive && !muerteFinalizada) {
-          setTimeout(() => setMuerteFinalizada(true), 3000);
-        }
-      } catch (error) {
-        console.error("El servidor está apagado o no responde");
+      } catch (e) {
+        console.error("Servidor OFF");
       }
     }, 2000);
-
     return () => clearInterval(timer);
-  }, [muerteFinalizada]);
+  }, []);
 
-  const comer = async () => {
-    const res = await fetch(`${API_URL}/comer`, { method: "POST" });
-    const data = await res.json();
-    setStats(data);
-  };
-
+  // Acciones
   const jugar = async () => {
-    const res = await fetch(`${API_URL}/jugar`, { method: "POST" });
-    const data = await res.json();
-    setStats(data);
+    setIsAnimatingPlay(true);
+    await fetch(`${API_URL}/jugar`, { method: "POST" });
+    setTimeout(() => setIsAnimatingPlay(false), 3000);
   };
 
-  const dormir = async () => {
-    const res = await fetch(`${API_URL}/dormir`, { method: "POST" });
-    const data = await res.json();
-    setStats(data);
-  };
+  const comer = () => fetch(`${API_URL}/comer`, { method: "POST" });
+  const dormir = () => fetch(`${API_URL}/dormir`, { method: "POST" });
+  const revivir = () => fetch(`${API_URL}/revivir`, { method: "POST" });
 
-  const revivir = async () => {
-    const res = await fetch(`${API_URL}/revivir`, { method: "POST" });
-    const data = await res.json();
-    setStats(data);
-    setMuerteFinalizada(false);
-  };
-
+  // --- LÓGICA DE SELECCIÓN DE IMAGEN (El corazón de la App) ---
   const getCurrentImage = () => {
+    // Caso 1: Skin Drácula (Usa su PNG/GIF)
     if (skin === "dracula") return imgDracula;
-    if (stats.health <= 0) {
-      if (muerteFinalizada) return imgMuerteFinal;
-      return imgMuerteCaida;
-    }
-    if (stats.durmiendo) return imgDormir;
-    if (stats.hunger > 80) return imgEnfadado;
-    if (stats.happiness < 30) return imgTriste;
-    if (stats.happiness > 70) return imgFeliz;
-    return imgNeutral;
+
+    // Caso 2: Skin Original (Usa los nuevos GIFs según estado)
+    if (!stats.is_alive) return imgMuerte;
+    if (stats.durmiendo) return imgMimir;
+    if (isAnimatingPlay) return imgPlay;
+    if (stats.hunger > 80 || stats.happiness < 30) return imgTriste;
+    return imgFeliz;
   };
 
   return (
@@ -115,11 +92,12 @@ function App() {
         hunger={stats.hunger}
         happiness={stats.happiness}
         petImage={getCurrentImage()}
-        skin={skin} // <--- AÑADE ESTA LÍNEA AQUÍ
+        skin={skin}
         onTick={() => {}}
       />
 
-      <div style={{ marginTop: "10px" }}>
+      {/* RE-AÑADIDO: Botón de cambiar avatar */}
+      <div style={{ marginTop: "15px" }}>
         <Button
           texto="🔄 Cambiar Avatar"
           color="lila-button"
@@ -144,11 +122,11 @@ function App() {
         />
       )}
 
+      {/* RE-AÑADIDO: Modal de selección */}
       {showMenu && (
         <div className="avatar-menu-overlay" onClick={() => setShowMenu(false)}>
           <div className="avatar-menu" onClick={(e) => e.stopPropagation()}>
-            <h3>✨ Elige tu Mascota ✨</h3>
-
+            <h3>Elige tu Mascota</h3>
             <div className="avatar-grid">
               <div
                 className={`avatar-option ${skin === "original" ? "selected" : ""}`}
@@ -157,10 +135,9 @@ function App() {
                   setShowMenu(false);
                 }}
               >
-                <img src={imgFeliz} alt="Original" className="preview-normal" />
-                <span className="avatar-name">Tama</span>
+                <img src={imgFeliz} alt="Original" />
+                <span>Tama</span>
               </div>
-
               <div
                 className={`avatar-option ${skin === "dracula" ? "selected" : ""}`}
                 onClick={() => {
@@ -168,19 +145,13 @@ function App() {
                   setShowMenu(false);
                 }}
               >
-                {/* PREVIEW DEL MENÚ - CORREGIDO */}
-                <div
-                  className="preview-dracula-animated"
-                  style={{
-                    backgroundImage: `url(${imgDracula})`,
-                  }}
+                <img
+                  src={imgDracula}
+                  alt="Dracula"
+                  style={{ imageRendering: "pixelated" }}
                 />
-                <span className="avatar-name">Vampiro</span>
+                <span>Vampiro</span>
               </div>
-            </div>
-
-            <div style={{ marginTop: "20px" }}>
-              <small>¡Haz clic fuera para cerrar!</small>
             </div>
           </div>
         </div>
