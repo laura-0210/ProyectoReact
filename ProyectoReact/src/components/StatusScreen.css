@@ -3,11 +3,11 @@
 
 /* --- 1. PANTALLA TIPO GAMEBOY --- */
 .gameboy-screen {
-  background-color: #d4b094; /* Color sepia/retro */
-  border: 6px solid #5b6a4a; /* Verde militar oscuro */
+  background-color: #d4b094;
+  border: 6px solid #5b6a4a;
   border-radius: 8px;
   padding: 20px;
-  width: 320px;
+  width: 350px; /* Un pelín más ancho para que respire */
   font-family: "Press Start 2P", cursive, sans-serif;
   color: #0f380f;
   box-shadow: inset 0 0 25px #ffffffa6;
@@ -18,26 +18,23 @@
 
 /* --- 2. CONTENEDOR DEL GATO --- */
 .sprite-container {
-  background-color: #b4d1a4; /* Fondo verde LCD clásico */
+  background-color: #b4d1a4;
   border: 3px solid #5b6a4a;
-  height: 150px;
+  height: 200px; /* Más alto para que quepan grandes */
   display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+  justify-content: center; /* Centrado horizontal total */
+  align-items: center; /* Centrado vertical total */
   overflow: hidden;
+  position: relative;
 }
 
-/* --- 3. EL GATO (GIF) --- */
 .pixel-sprite {
-  width: 120px;
-  height: 120px;
-  object-fit: contain;
-
-  /* Mantiene los píxeles nítidos, esencial para GIFs de Pixel Art */
-  image-rendering: pixelated;
+  width: 180px; /* Forzamos el tamaño grande */
+  height: 180px; /* Forzamos el tamaño grande */
+  object-fit: contain; /* Evita que se deformen */
+  image-rendering: pixelated; /* Mantiene los píxeles nítidos */
   image-rendering: crisp-edges;
-  -ms-interpolation-mode: nearest-neighbor;
+  display: block;
 }
 
 /* --- 4. TEXTOS Y ALERTAS --- */

@@ -1,28 +1,20 @@
-// src/App.tsx
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-
 import { StatusScreen } from "./components/StatusScreen";
 import Controls from "./components/Controls";
 import Button from "./components/Button";
 
-// --- PERSONAJE 1: TAMA (Original) ---
 import imgTamaHappy from "./assets/sprites/happy.gif";
 import imgTamaTriste from "./assets/sprites/triste.jpeg";
 import imgTamaMimir from "./assets/sprites/dormir.jpeg";
-
-// --- PERSONAJE 2: SOMBRÍO (Mapeo exacto solicitado) ---
 import imgSombrioIdle from "./assets/sprites/gatofeliz.gif";
 import imgSombrioNom from "./assets/sprites/gatonom.gif";
 import imgSombrioPlay from "./assets/sprites/gatoplay.gif";
 import imgSombrioMimir from "./assets/sprites/gatomimir.gif";
-
-// --- PERSONAJE 3: NARANJA ---
 import imgNaranjaIdle from "./assets/sprites/gatoidle.gif";
 import imgNaranjaPlay from "./assets/sprites/gatojuego.gif";
 import imgNaranjaMimir from "./assets/sprites/gatomimirnaranja.gif";
-
 import imgMuerte from "./assets/sprites/muerte3.jpeg";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
@@ -43,70 +35,90 @@ function App() {
   const [currentAction, setCurrentAction] = useState<
     "eating" | "playing" | null
   >(null);
-
-  // ✅ SOLUCIÓN AL ERROR: Usamos 'number' en lugar de 'NodeJS.Timeout'
   const actionTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
-    const timer = setInterval(async () => {
+    let isMounted = true;
+    const fetchTick = async () => {
       try {
         const res = await fetch(`${API_URL}/tick`, { method: "POST" });
-        const data = await res.json();
-        setStats(data);
+        if (res.ok && isMounted) {
+          const data = await res.json();
+          setStats(data);
+        }
       } catch (e) {
-        console.error("Error tick");
+        console.warn("Tick error");
+      } finally {
+        if (isMounted) setTimeout(fetchTick, 5000);
       }
-    }, 2000);
-    return () => clearInterval(timer);
+    };
+    fetchTick();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  // Función para manejar acciones e interrumpir las anteriores de inmediato
-  const startAction = (type: "eating" | "playing") => {
-    // Si ya había un temporizador, lo matamos para cambiar al nuevo GIF ya mismo
-    if (actionTimerRef.current) window.clearTimeout(actionTimerRef.current);
+  // --- FUNCIÓN MODIFICADA PARA TIEMPO VARIABLE ---
+  const startAction = useCallback(
+    (type: "eating" | "playing") => {
+      // 1. Limpiar timer anterior
+      if (actionTimerRef.current !== null) {
+        window.clearTimeout(actionTimerRef.current);
+      }
 
-    setCurrentAction(type); // Cambio instantáneo
+      // 2. Calcular duración: 800ms normal, 1600ms si es naranja jugando
+      let duration = 800;
+      if (skin === "naranja" && type === "playing") {
+        duration = 1600;
+      }
 
-    // Programamos la vuelta al estado normal
-    actionTimerRef.current = window.setTimeout(() => {
-      setCurrentAction(null);
-    }, 3000);
-  };
+      // 3. Iniciar acción y timer con la duración calculada
+      setCurrentAction(type);
+      actionTimerRef.current = window.setTimeout(() => {
+        setCurrentAction(null);
+        actionTimerRef.current = null;
+      }, duration);
+    },
+    [skin],
+  ); // 👈 ¡IMPORTANTE! Añadimos [skin] aquí para que detecte el cambio de personaje
 
-  const jugar = async () => {
+  const jugar = useCallback(() => {
     startAction("playing");
-    await fetch(`${API_URL}/jugar`, { method: "POST" });
-  };
+    fetch(`${API_URL}/jugar`, { method: "POST" });
+  }, [startAction]);
 
-  const comer = async () => {
+  const comer = useCallback(() => {
     startAction("eating");
-    await fetch(`${API_URL}/comer`, { method: "POST" });
-  };
+    fetch(`${API_URL}/comer`, { method: "POST" });
+  }, [startAction]);
 
-  const dormir = async () => {
-    if (actionTimerRef.current) window.clearTimeout(actionTimerRef.current);
+  const dormir = useCallback(() => {
+    if (actionTimerRef.current !== null) {
+      window.clearTimeout(actionTimerRef.current);
+      actionTimerRef.current = null;
+    }
     setCurrentAction(null);
-    await fetch(`${API_URL}/dormir`, { method: "POST" });
-  };
+    fetch(`${API_URL}/dormir`, { method: "POST" });
+  }, []);
 
-  const revivir = () => fetch(`${API_URL}/revivir`, { method: "POST" });
+  const revivir = useCallback(() => {
+    fetch(`${API_URL}/revivir`, { method: "POST" });
+  }, []);
 
   const getCurrentImage = () => {
     if (!stats.is_alive) return imgMuerte;
 
     switch (skin) {
-      case "vampiro": // GATO SOMBRÍO
+      case "vampiro":
         if (stats.durmiendo) return imgSombrioMimir;
         if (currentAction === "eating") return imgSombrioNom;
         if (currentAction === "playing") return imgSombrioPlay;
         return imgSombrioIdle;
-
-      case "naranja": // GATO NARANJA
+      case "naranja":
         if (stats.durmiendo) return imgNaranjaMimir;
         if (currentAction === "playing") return imgNaranjaPlay;
         return imgNaranjaIdle;
-
-      default: // TAMA ORIGINAL
+      default:
         if (stats.durmiendo) return imgTamaMimir;
         if (currentAction === "playing") return imgTamaHappy;
         if (stats.hunger > 80) return imgTamaTriste;
@@ -126,7 +138,7 @@ function App() {
       />
       <div style={{ marginTop: "10px" }}>
         <Button
-          texto="🔄 Cambiar Personaje"
+          texto="🔄 Personaje"
           color="lila-button"
           onClick={() => setShowMenu(true)}
           desactivado={false}
@@ -172,7 +184,7 @@ function App() {
                 <span>Sombrío</span>
               </div>
               <div
-                className={`avatar-option ${skin === "naranja" ? "selected" : ""}`}
+                className="avatar-option"
                 onClick={() => {
                   setSkin("naranja");
                   setShowMenu(false);
