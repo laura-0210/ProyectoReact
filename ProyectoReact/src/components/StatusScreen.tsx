@@ -48,7 +48,7 @@ export const StatusScreen = ({
         {isDracula ? (
           /* APLICAMOS EL ESTILO DIRECTO */
            <div 
-    className="dracula-sprite"
+    className="preview-dracula-animated"
     style={{ backgroundImage: `url(${petImage})` }}
   /> 
         ) : (

@@ -121,10 +121,7 @@ h1 {
 /* ========================================================
    ANIMACIÓN GLOBAL "NUCLEAR" (Protegida de Vercel)
    ======================================================== */
-@keyframes sprite-play-global {
-  from { background-position: 0% 0%; }
-  to { background-position: 100% 0%; }
-}
+
 .preview-dracula-animated {
   width: 50px;
   height: 50px;
