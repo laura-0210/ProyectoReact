@@ -115,78 +115,49 @@ h1 {
 
 /* La Ventana (Ojo de cerradura) */
 .sprite-dracula-large {
-  width: 120px !important;
-  height: 120px !important;
-  overflow: hidden; /* IMPORTANTE: corta los otros 5 gatos */
+  width: 64px !important; /* Ajusta este valor si el gato es más ancho/estrecho */
+  height: 64px !important; /* Ajusta este valor al alto de un gato */
+  overflow: hidden; /* ESTO es lo que esconde a los otros 5 gatos */
   position: relative;
-  display: flex;
-  justify-content: flex-start; /* Alinea la tira al inicio */
-  align-items: center;
+  display: block;
   margin: 0 auto;
+  background: transparent;
 }
 
-/* La Tira de imágenes (Los 6 gatos) */
+/* 2. La TIRA (Los 6 gatitos juntos) */
 .sprite-dracula-large img {
-  width: 720px !important; /* 120px * 6 frames */
-  height: 120px !important;
-  object-fit: none; /* Evita que la imagen se deforme o escale */
+  display: block;
+  height: 64px !important;
+  width: auto !important; /* Deja que el navegador calcule el ancho total */
   image-rendering: pixelated;
-  /* Animación: mueve la tira hacia la izquierda */
+
+  /* La animación mueve la tira exactamente su propio ancho */
   animation: caminar-vampiro 0.8s steps(6) infinite !important;
 }
 
-/* Keyframes Globales */
 @keyframes caminar-vampiro {
   from {
     transform: translateX(0);
   }
   to {
     transform: translateX(-100%);
-  } /* Mueve los 720px hacia la izquierda */
+  } /* Mueve la tira entera de 6 gatos */
 }
 
-/* Versión para el Preview del Menú (más pequeño: 50px) */
-.preview-dracula-animated {
-  width: 50px !important;
-  height: 50px !important;
-  overflow: hidden;
-  position: relative;
+/* Ajuste para que el contenedor verde no se vea vacío */
+.sprite-container {
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #b4d1a4;
+  border: 3px solid #0f380f;
 }
 
-.preview-dracula-animated img {
-  width: 300px !important; /* 50px * 6 frames */
-  height: 50px !important;
-  object-fit: none;
-  image-rendering: pixelated;
-  animation: caminar-vampiro 0.8s steps(6) infinite !important;
-}
-
-/* ========================================================
-   4. SPRITES NORMALES (Gifs o Tama original)
-   ======================================================== */
+/* Gifs normales */
 .pixel-sprite {
   width: 120px;
   height: 120px;
   object-fit: contain;
   image-rendering: pixelated;
-}
-
-.preview-normal {
-  width: 50px;
-  height: 50px;
-  object-fit: contain;
-}
-
-/* ========================================================
-   5. EFECTOS ADICIONALES
-   ======================================================== */
-@keyframes popIn {
-  from {
-    transform: scale(0.5);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
 }
