@@ -1,11 +1,15 @@
+// src/components/StatusScreen.tsx
 import { useEffect } from "react";
 import "./StatusScreen.css";
+
+export type SkinType = "original" | "dracula";
 
 interface StatusScreenProps {
   health: number;
   hunger: number;
   happiness: number;
   petImage: string;
+  skin: SkinType;
   onTick: () => void;
 }
 
@@ -14,19 +18,15 @@ export const StatusScreen = ({
   hunger,
   happiness,
   petImage,
+  skin,
   onTick,
 }: StatusScreenProps) => {
-  // Detectamos si es la imagen del drácula (más robusto)
-  const isDracula =
-    petImage &&
-    (petImage.includes("dracula") ||
-      petImage.includes("Dracula") ||
-      petImage.includes("draculacat"));
+  // Solo animamos si es la skin dracula Y no estamos mostrando una imagen de muerte/dormir
+  const esVampiroCaminando =
+    skin === "dracula" && petImage.includes("draculacat");
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      onTick();
-    }, 2000);
+    const timer = setInterval(() => onTick(), 2000);
     return () => clearInterval(timer);
   }, [onTick]);
 
@@ -36,57 +36,38 @@ export const StatusScreen = ({
     return "bg-danger";
   };
 
-  // DEBUG: Descomentar para ver qué imagen se está cargando
-  // console.log('petImage:', petImage);
-  // console.log('isDracula:', isDracula);
-
   return (
     <div className="gameboy-screen">
       <div className="sprite-container">
-        {isDracula ? (
-          // VERSIÓN DRÁCULA: Sprite animado
+        {esVampiroCaminando ? (
+          /* MODO SPRITE: Ventana de 120px que solo muestra 1 de los 6 gatos */
           <div
-            className="pixel-sprite dracula-anim"
-            style={{
-              backgroundImage: `url(${petImage})`,
-              // Añadimos esto para asegurar que carga
-              backgroundSize: "600% 100%",
-              backgroundRepeat: "no-repeat",
-              imageRendering: "pixelated",
-            }}
+            className="dracula-anim-prod"
+            style={{ backgroundImage: `url(${petImage})` }}
           />
         ) : (
-          // VERSIÓN NORMAL: Imagen estática
-          <img
-            src={petImage}
-            alt="Mascota"
-            className="pixel-sprite"
-            style={{ imageRendering: "pixelated" }}
-          />
+          /* MODO NORMAL: GIFs o imágenes estáticas */
+          <img src={petImage} alt="Mascota" className="pixel-sprite" />
         )}
       </div>
 
       <div className="alert-area">
         {hunger > 80 && (
-          <div className="alert alert-danger pixel-alert">
-            ¡TENGO HAMBRE! 🍖
-          </div>
+          <div className="alert alert-danger pixel-alert">¡HAMBRE! 🍖</div>
         )}
         {happiness < 20 && (
-          <div className="alert alert-warning pixel-alert">ESTOY TRISTE 😢</div>
+          <div className="alert alert-warning pixel-alert">TRISTE 😢</div>
         )}
         {health < 20 && (
-          <div className="alert alert-danger pixel-alert">¡ME MUERO! 🚑</div>
+          <div className="alert alert-danger pixel-alert">¡MUERO! 🚑</div>
         )}
       </div>
 
       <div className="stats-container">
+        {/* Barra de Salud */}
         <div className="stat-row">
           <span className="pixel-text">SALUD</span>
-          <div
-            className="progress"
-            style={{ height: "20px", border: "2px solid #0f380f" }}
-          >
+          <div className="progress">
             <div
               className={`progress-bar ${getBgClass(health)}`}
               style={{ width: `${health}%` }}
@@ -95,13 +76,10 @@ export const StatusScreen = ({
             </div>
           </div>
         </div>
-
+        {/* Barra de Hambre */}
         <div className="stat-row">
           <span className="pixel-text">HAMBRE</span>
-          <div
-            className="progress"
-            style={{ height: "20px", border: "2px solid #0f380f" }}
-          >
+          <div className="progress">
             <div
               className={`progress-bar ${hunger > 80 ? "bg-danger" : "bg-info"}`}
               style={{ width: `${hunger}%` }}
@@ -110,13 +88,10 @@ export const StatusScreen = ({
             </div>
           </div>
         </div>
-
+        {/* Barra de Felicidad */}
         <div className="stat-row">
           <span className="pixel-text">FELICIDAD</span>
-          <div
-            className="progress"
-            style={{ height: "20px", border: "2px solid #0f380f" }}
-          >
+          <div className="progress">
             <div
               className="progress-bar bg-warning"
               style={{ width: `${happiness}%`, color: "black" }}
