@@ -169,18 +169,11 @@ function App() {
               >
                 {/* PREVIEW DEL MENÚ - CORREGIDO */}
                 <div
-                  className="preview-dracula"
-                  style={{
-                    backgroundImage: `url(${imgDracula})`,
-                    width: "50px",
-                    height: "50px",
-                    backgroundSize: "600% 100%",
-                    backgroundRepeat: "no-repeat",
-                    imageRendering: "pixelated",
-                    // CORRECCIÓN AQUÍ: Usamos sprite-play-global
-                    animation: "sprite-play-global 0.8s steps(5) infinite",
-                  }}
-                />
+  className="preview-dracula-animated"
+  style={{
+    backgroundImage: `url(${imgDracula})`,
+  }}
+/>
                 <span className="avatar-name">Vampiro</span>
               </div>
             </div>

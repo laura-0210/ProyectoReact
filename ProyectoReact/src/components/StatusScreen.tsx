@@ -39,23 +39,7 @@ export const StatusScreen = ({
 
   // --- ESTILO "NUCLEAR" PARA EL DRÁCULA ---
   // Definido aquí para que la minificación de Vercel no lo toque
-  const draculaStyle = {
-    backgroundImage: `url(${petImage})`,
-    width: '120px',
-    height: '120px',
-    backgroundRepeat: 'no-repeat',
-    
-    // Ancho total de la tira (600% porque son 6 frames)
-    backgroundSize: '600% 100%', 
-    
-    backgroundPosition: '0 0',
-    imageRendering: 'pixelated' as const,
-    
-    // Animación global definida en App.css
-    animation: 'sprite-play-global 0.8s steps(5) infinite',
-    
-    margin: '0 auto'
-  };
+  
 
   return (
     <div className="gameboy-screen">
