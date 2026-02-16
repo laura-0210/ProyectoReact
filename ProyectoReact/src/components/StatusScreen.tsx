@@ -1,28 +1,27 @@
-import { useEffect } from "react";
-
-export type SkinType = "original" | "dracula";
+import React, { useEffect } from 'react';
+import './StatusScreen.css';
 
 interface StatusScreenProps {
   health: number;
   hunger: number;
   happiness: number;
-  petImage: string;
-  skin: SkinType;
-  onTick: () => void;
+  petImage: string;    
+  onTick: () => void; 
 }
 
-export const StatusScreen = ({
-  health,
-  hunger,
-  happiness,
-  petImage,
-  onTick,
-  skin,
-}: StatusScreenProps) => {
+export const StatusScreen = ({ health, hunger, happiness, petImage, onTick }: StatusScreenProps) => {
+
+  // Detectamos si es la imagen del drácula (más robusto)
+  const isDracula = petImage && (
+    petImage.includes('dracula') || 
+    petImage.includes('Dracula') ||
+    petImage.includes('draculacat')
+  );
+
   useEffect(() => {
     const timer = setInterval(() => {
-      onTick();
-    }, 2000);
+      onTick(); 
+    }, 2000); 
     return () => clearInterval(timer);
   }, [onTick]);
 
@@ -32,107 +31,66 @@ export const StatusScreen = ({
     return "bg-danger";
   };
 
-  // Lógica Maestra: Solo animamos si es dracula Y la imagen es la del gato (no muerte)
-  const isSpriteSheet = skin === "dracula" && petImage.includes("draculacat");
+  // DEBUG: Descomentar para ver qué imagen se está cargando
+  // console.log('petImage:', petImage);
+  // console.log('isDracula:', isDracula);
 
   return (
     <div className="gameboy-screen">
-      {/* Contenedor centrado */}
-      <div
-        className="sprite-container"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "150px",
-        }}
-      >
-        {isSpriteSheet ? (
-          /* --- MODO SPRITE (Drácula vivo) --- */
-          /* Usamos un DIV como ventana para mostrar solo 1 trozo de la imagen */
-          <div
-            style={{
-              width: "64px", // Ancho exacto de 1 gato
-              height: "64px", // Alto exacto de 1 gato
+      <div className="sprite-container">
+        
+        {isDracula ? (
+          // VERSIÓN DRÁCULA: Sprite animado
+          <div 
+            className="pixel-sprite dracula-anim"
+            style={{ 
               backgroundImage: `url(${petImage})`,
-              backgroundRepeat: "no-repeat",
-              // EL TRUCO: 600% porque hay 6 gatos en la tira
-              backgroundSize: "600% 100%",
-              imageRendering: "pixelated",
-              transform: "scale(2.5)",
-              marginTop: "20px",
-              animation: "draculaWalk 1s steps(6) infinite",
+              // Añadimos esto para asegurar que carga
+              backgroundSize: '600% 100%',
+              backgroundRepeat: 'no-repeat',
+              imageRendering: 'pixelated'
             }}
           />
         ) : (
-          /* --- MODO NORMAL (Tama original o Drácula muerto) --- */
-          <img
-            src={petImage}
-            alt="Mascota"
-            className="pet-avatar"
-            // Aseguramos que la imagen normal no se estire rara
-            style={{ height: "120px", objectFit: "contain" }}
+          // VERSIÓN NORMAL: Imagen estática
+          <img 
+            src={petImage} 
+            alt="Mascota" 
+            className="pixel-sprite" 
+            style={{ imageRendering: 'pixelated' }}
           />
         )}
-      </div>
 
-      {/* ... (Resto de alertas y barras igual que antes) ... */}
+      </div>
+  
       <div className="alert-area">
-        {hunger > 80 && (
-          <div className="alert alert-danger pixel-alert">¡HAMBRE! 🍖</div>
-        )}
-        {happiness < 20 && (
-          <div className="alert alert-warning pixel-alert">TRISTE 😢</div>
-        )}
-        {health < 20 && (
-          <div className="alert alert-danger pixel-alert">¡SALUD BAJA! 🚑</div>
-        )}
+        {hunger > 80 && <div className="alert alert-danger pixel-alert">¡TENGO HAMBRE! 🍖</div>}
+        {happiness < 20 && <div className="alert alert-warning pixel-alert">ESTOY TRISTE 😢</div>}
+        {health < 20 && <div className="alert alert-danger pixel-alert">¡ME MUERO! 🚑</div>}
       </div>
 
       <div className="stats-container">
         <div className="stat-row">
           <span className="pixel-text">SALUD</span>
-          <div
-            className="progress"
-            style={{ height: "20px", border: "2px solid #0f380f" }}
-          >
-            <div
-              className={`progress-bar ${getBgClass(health)}`}
-              style={{ width: `${health}%` }}
-            >
-              {health}%
-            </div>
+          <div className="progress" style={{ height: '20px', border: '2px solid #0f380f' }}>
+            <div className={`progress-bar ${getBgClass(health)}`} style={{ width: `${health}%` }}>{health}%</div>
           </div>
         </div>
+        
         <div className="stat-row">
           <span className="pixel-text">HAMBRE</span>
-          <div
-            className="progress"
-            style={{ height: "20px", border: "2px solid #0f380f" }}
-          >
-            <div
-              className={`progress-bar ${hunger > 80 ? "bg-danger" : "bg-info"}`}
-              style={{ width: `${hunger}%` }}
-            >
-              {hunger}%
-            </div>
+          <div className="progress" style={{ height: '20px', border: '2px solid #0f380f' }}>
+            <div className={`progress-bar ${hunger > 80 ? 'bg-danger' : 'bg-info'}`} style={{ width: `${hunger}%` }}>{hunger}%</div>
           </div>
         </div>
+
         <div className="stat-row">
           <span className="pixel-text">FELICIDAD</span>
-          <div
-            className="progress"
-            style={{ height: "20px", border: "2px solid #0f380f" }}
-          >
-            <div
-              className="progress-bar bg-warning"
-              style={{ width: `${happiness}%`, color: "black" }}
-            >
-              {happiness}%
-            </div>
+          <div className="progress" style={{ height: '20px', border: '2px solid #0f380f' }}>
+            <div className="progress-bar bg-warning" style={{ width: `${happiness}%`, color: 'black' }}>{happiness}%</div>
           </div>
         </div>
       </div>
     </div>
-  );
+  ); 
 };

@@ -6,14 +6,10 @@
   border-radius: 8px;
   padding: 20px;
   width: 320px;
-
   font-family: "Press Start 2P", cursive, sans-serif;
   color: #7b9f67;
-
   box-shadow: inset 0 0 25px #ffffffa6;
-
   display: flex;
-  
   flex-direction: column;
   gap: 12px;
 }
@@ -28,13 +24,68 @@
   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+/* ===================================================
+   SPRITES NORMALES (GIF, JPEG, PNG estáticos)
+   =================================================== */
 .pixel-sprite {
-  height: 110px;
-  width: 110px;
+  width: 120px;
+  height: 120px;
   object-fit: contain;
+  
+  /* Aseguramos pixel perfect en todos los navegadores */
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
+/* ===================================================
+   SPRITE SHEET ANIMADO - DRÁCULA
+   =================================================== */
+.dracula-anim {
+  /* Tamaño de UN frame individual */
+  width: 120px !important;
+  height: 120px !important;
+  
+  /* Configuración del background */
+  background-repeat: no-repeat !important;
+  background-size: 600% 100% !important; /* 6 frames = 600% */
+  background-position: 0 0;
+  
+  /* Pixel perfect rendering */
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  
+  /* LA ANIMACIÓN MÁGICA */
+  animation: sprite-play 0.8s steps(5) infinite;
+  -webkit-animation: sprite-play 0.8s steps(5) infinite;
+}
+
+/* Keyframes para la animación del sprite */
+@keyframes sprite-play {
+  from {
+    background-position: 0% 0;
+  }
+  to {
+    background-position: 100% 0;
+  }
+}
+
+/* Prefijo para Safari/webkit */
+@-webkit-keyframes sprite-play {
+  from {
+    background-position: 0% 0;
+  }
+  to {
+    background-position: 100% 0;
+  }
+}
+
+/* ===================================================
+   RESTO DE ESTILOS
+   =================================================== */
 .pixel-text {
   font-size: 10px;
   margin-bottom: 4px;
@@ -70,38 +121,11 @@
   0%, 100% { opacity: 1; }
   50% { opacity: 0.6; }
 }
-/* Estilo base para las imágenes normales (JPEGs/GIFs simples) */
-.pixel-sprite {
-  width: 140px;  /* Tamaño del personaje en pantalla */
-  height: 140px;
-  object-fit: contain;
-  image-rendering: pixelated;
-}
 
-/* --- MODO DRÁCULA (Sprite Sheet) --- */
-.dracula-anim {
-  /* 1. Definimos el tamaño de UN solo cuadro */
-  width: 120px; 
-  height: 120px;
-
-  /* 2. Configuración del fondo */
-  background-repeat: no-repeat;
-  
-  /* IMPORTANTE: Como hay 6 frames, el ancho total es 600% */
-  background-size: 600% 100%; 
-  
-  /* 3. La Animación */
-  /* steps(5) porque se mueve 5 veces para llegar al final (0 -> 1 -> 2 -> 3 -> 4 -> 5) */
-  /* Si ves que salta raro, prueba steps(6) */
-  animation: sprite-play 0.8s steps(5) infinite;
-}
-
-@keyframes sprite-play {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    /* Movemos el fondo hacia la izquierda hasta el 100% de su longitud */
-    background-position: 100% 0;
-  }
+/* ===================================================
+   FIX PARA VERCEL - Asegurar que los estilos inline 
+   no sobrescriban la animación
+   =================================================== */
+.dracula-anim[style] {
+  animation: sprite-play 0.8s steps(5) infinite !important;
 }
