@@ -21,9 +21,12 @@ export const StatusScreen = ({
   skin,
   onTick,
 }: StatusScreenProps) => {
-  // Solo animamos si es la skin dracula Y no estamos mostrando una imagen de muerte/dormir
-  const esVampiroCaminando =
-    skin === "dracula" && petImage.includes("draculacat");
+  // Detección robusta del vampiro
+  const isDracula =
+    petImage &&
+    (petImage.includes("dracula") ||
+      petImage.includes("Dracula") ||
+      petImage.includes("draculacat"));
 
   useEffect(() => {
     const timer = setInterval(() => onTick(), 2000);
@@ -36,17 +39,19 @@ export const StatusScreen = ({
     return "bg-danger";
   };
 
+  // --- ESTILO "NUCLEAR" PARA EL DRÁCULA ---
+  // Definido aquí para que la minificación de Vercel no lo toque
+
   return (
     <div className="gameboy-screen">
       <div className="sprite-container">
-        {esVampiroCaminando ? (
-          /* MODO SPRITE: Ventana de 120px que solo muestra 1 de los 6 gatos */
+        {isDracula ? (
+          /* APLICAMOS EL ESTILO DIRECTO */
           <div
-            className="dracula-anim-prod"
+            className="dracula-sprite"
             style={{ backgroundImage: `url(${petImage})` }}
           />
         ) : (
-          /* MODO NORMAL: GIFs o imágenes estáticas */
           <img src={petImage} alt="Mascota" className="pixel-sprite" />
         )}
       </div>
@@ -59,15 +64,18 @@ export const StatusScreen = ({
           <div className="alert alert-warning pixel-alert">TRISTE 😢</div>
         )}
         {health < 20 && (
-          <div className="alert alert-danger pixel-alert">¡MUERO! 🚑</div>
+          <div className="alert alert-danger pixel-alert">¡SALUD BAJA! 🚑</div>
         )}
       </div>
 
       <div className="stats-container">
-        {/* Barra de Salud */}
+        {/* Barras de estado... */}
         <div className="stat-row">
           <span className="pixel-text">SALUD</span>
-          <div className="progress">
+          <div
+            className="progress"
+            style={{ height: "20px", border: "2px solid #0f380f" }}
+          >
             <div
               className={`progress-bar ${getBgClass(health)}`}
               style={{ width: `${health}%` }}
@@ -76,10 +84,12 @@ export const StatusScreen = ({
             </div>
           </div>
         </div>
-        {/* Barra de Hambre */}
         <div className="stat-row">
           <span className="pixel-text">HAMBRE</span>
-          <div className="progress">
+          <div
+            className="progress"
+            style={{ height: "20px", border: "2px solid #0f380f" }}
+          >
             <div
               className={`progress-bar ${hunger > 80 ? "bg-danger" : "bg-info"}`}
               style={{ width: `${hunger}%` }}
@@ -88,10 +98,12 @@ export const StatusScreen = ({
             </div>
           </div>
         </div>
-        {/* Barra de Felicidad */}
         <div className="stat-row">
           <span className="pixel-text">FELICIDAD</span>
-          <div className="progress">
+          <div
+            className="progress"
+            style={{ height: "20px", border: "2px solid #0f380f" }}
+          >
             <div
               className="progress-bar bg-warning"
               style={{ width: `${happiness}%`, color: "black" }}
