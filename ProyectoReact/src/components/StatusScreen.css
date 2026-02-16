@@ -1,79 +1,51 @@
-/* src/components/StatusScreen.css */
-@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
-
 .gameboy-screen {
-  background-color: #d4b094; /* Color hueso retro */
-  border: 6px solid #5b6a4a;
-  border-radius: 12px;
+  background-color: #dde5b6;
+  border: 8px solid #a68a64;
+  border-radius: 15px;
   padding: 20px;
-  width: 320px;
-  font-family: "Press Start 2P", cursive, sans-serif;
-  color: #0f380f;
-  box-shadow: inset 0 0 25px #ffffffa6;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+  width: 340px;
+  box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.4);
 }
 
 .sprite-container {
-  background-color: #b4d1a4; /* Verde GameBoy clásico */
-  border: 3px solid #5b6a4a;
-  height: 200px; /* Suficiente espacio para que sean grandes */
+  background-color: #f1f3e9;
+  border: 4px solid #735d4d;
+  height: 200px;
   display: flex;
-  justify-content: center; /* Centrado horizontal */
-  align-items: center; /* Centrado vertical */
-  overflow: hidden;
-  position: relative;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
 .pixel-sprite {
-  width: 170px; /* Tamaño grande para que se aprecie el pixel art */
+  width: 170px;
   height: 170px;
-  object-fit: contain; /* No deforma la imagen */
-  image-rendering: pixelated; /* Evita que se vea borroso */
-  image-rendering: crisp-edges;
-  display: block;
-}
-
-/* --- ALERTAS Y BARRAS --- */
-.alert-area {
-  min-height: 40px; /* Evita que los elementos de abajo salten cuando sale un aviso */
-}
-
-.pixel-alert {
-  font-size: 8px;
-  border: 2px solid #5b6a4a;
-  background-color: #ffe5ec;
-  padding: 6px;
-  text-align: center;
-  margin-bottom: 5px;
-  animation: parpadeo 1s infinite;
-}
-
-.stat-row {
-  margin-bottom: 8px;
+  image-rendering: pixelated;
+  object-fit: contain;
 }
 
 .pixel-text {
-  font-size: 10px;
-  margin-bottom: 4px;
+  font-family: "Press Start 2P", cursive;
+  font-size: 8px;
+  color: #735d4d;
   display: block;
+  margin-bottom: 4px;
 }
 
 .progress {
+  background-color: #fefae0;
+  border: 2px solid #735d4d;
   border-radius: 0;
-  background-color: #fff9c4;
-  border: 2px solid #5b6a4a;
   height: 18px;
+  margin-bottom: 10px;
 }
 
-@keyframes parpadeo {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.6;
-  }
+.bg-witch-green {
+  background-color: #a3b18a !important;
+}
+.bg-witch-yellow {
+  background-color: #e9d8a6 !important;
+}
+.bg-witch-red {
+  background-color: #9b2226 !important;
 }

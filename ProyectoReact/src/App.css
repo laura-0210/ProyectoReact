@@ -5,23 +5,67 @@
   align-items: center;
   width: 100vw;
   height: 100vh;
-  background-color: #ffc2d1; /* Fondo rosa suave */
+  background-color: #f3f0ff; /* Lavanda muy pálido */
+  background-image: radial-gradient(#d1c4e9 1px, transparent 1px);
+  background-size: 30px 30px;
 }
 
 .app-container {
-  background-color: #fffcf0;
-  padding: 30px;
+  background-color: #fdfcfb; /* Crema pergamino */
+  padding: 35px;
   border-radius: 50px;
-  border: 6px solid #9c8475;
+  border: 10px solid #b39ddb; /* Lila suave */
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-shadow: 0 10px 0 #9c8475; /* Efecto 3D de panel */
+  box-shadow:
+    0 15px 0 #9575cd,
+    0 30px 60px rgba(103, 58, 183, 0.1);
 }
 
-h1 {
+.witchy-title {
   font-family: "Press Start 2P", cursive;
-  font-size: 16px;
-  color: #9c8475;
-  margin-bottom: 20px;
+  font-size: 11px;
+  color: #7e57c2;
+  margin-bottom: 25px;
+  letter-spacing: 1px;
+}
+
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(237, 231, 246, 0.85); /* Velo lila */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  backdrop-filter: blur(10px);
+}
+
+.menu-card {
+  background: white;
+  border: 6px solid #b39ddb;
+  border-radius: 40px;
+  padding: 40px;
+}
+
+.char-card {
+  background: #f8f7ff;
+  border: 4px solid #ede7f6;
+  border-radius: 20px;
+  padding: 15px;
+  width: 130px;
+  cursor: pointer;
+  font-family: "Press Start 2P", cursive;
+  font-size: 8px;
+  color: #673ab7;
+}
+
+.char-card.active {
+  background: #f3e5f5;
+  border-color: #9575cd;
+  transform: translateY(-8px);
 }

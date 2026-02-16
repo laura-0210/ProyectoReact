@@ -5,20 +5,20 @@ import { StatusScreen } from "./components/StatusScreen";
 import Controls from "./components/Controls";
 import Button from "./components/Button";
 
-// --- IMPORTS (Basados en tu carpeta sprites) ---
+// --- IMPORTS (Asegúrate de que los nombres coincidan con tu carpeta assets/sprites) ---
 import imgTamaHappy from "./assets/sprites/happy.gif";
+import imgTamaNeutral from "./assets/sprites/neutral.jpeg";
 import imgTamaTriste from "./assets/sprites/triste.jpeg";
 import imgTamaMimir from "./assets/sprites/dormir.jpeg";
-import imgTamaNeutral from "./assets/sprites/neutral.jpeg";
 
-import imgVampiroIdle from "./assets/sprites/gatofeliz.gif";
-import imgVampiroNom from "./assets/sprites/gatonom.gif";
-import imgVampiroPlay from "./assets/sprites/gatoplay.gif";
-import imgVampiroMimir from "./assets/sprites/gatomimir.gif";
+import imgVampiroIdle from "./assets/sprites/gatofeliz.gif"; // gatofeliz.gif
+import imgVampiroNom from "./assets/sprites/gatonom.gif"; // gatonom.gif
+import imgVampiroPlay from "./assets/sprites/gatoplay.gif"; // gatoplay.gif
+import imgVampiroMimir from "./assets/sprites/gatomimir.gif"; // gatomimir.gif
 
-import imgNaranjaIdle from "./assets/sprites/gatoidle.gif";
-import imgNaranjaPlay from "./assets/sprites/gatojuego.gif";
-import imgNaranjaMimir from "./assets/sprites/gatomimirnaranja.gif";
+import imgNaranjaIdle from "./assets/sprites/gatoidle.gif"; // gatoidle.gif
+import imgNaranjaPlay from "./assets/sprites/gatojuego.gif"; // gatojuego.gif
+import imgNaranjaMimir from "./assets/sprites/gatomimirnaranja.gif"; // gatomimirnaranja.gif
 
 import imgMuerte from "./assets/sprites/muerte3.jpeg";
 
@@ -46,10 +46,7 @@ function App() {
     const fetchTick = async () => {
       try {
         const res = await fetch(`${API_URL}/tick`, { method: "POST" });
-        if (res.ok && isMounted) {
-          const data = await res.json();
-          setStats(data);
-        }
+        if (res.ok && isMounted) setStats(await res.json());
       } catch (e) {
         console.warn("Tick error");
       } finally {
@@ -67,7 +64,7 @@ function App() {
       if (actionTimerRef.current !== null)
         window.clearTimeout(actionTimerRef.current);
       setCurrentAction(type);
-      let duration = skin === "naranja" && type === "playing" ? 1600 : 800;
+      let duration = skin === "naranja" && type === "playing" ? 1600 : 1000;
       actionTimerRef.current = window.setTimeout(() => {
         setCurrentAction(null);
         actionTimerRef.current = null;
@@ -76,60 +73,45 @@ function App() {
     [skin],
   );
 
-  const jugar = useCallback(() => {
-    startAction("playing");
-    fetch(`${API_URL}/jugar`, { method: "POST" });
-  }, [startAction]);
-  const comer = useCallback(() => {
-    startAction("eating");
-    fetch(`${API_URL}/comer`, { method: "POST" });
-  }, [startAction]);
-  const dormir = useCallback(() => {
-    if (actionTimerRef.current) window.clearTimeout(actionTimerRef.current);
-    setCurrentAction(null);
-    fetch(`${API_URL}/dormir`, { method: "POST" });
-  }, []);
-
   const getCurrentImage = () => {
     if (!stats.is_alive) return imgMuerte;
 
-    // PRIORIDAD 1: Acciones (Para que se vea el cambio al pulsar botón)
-    if (currentAction === "playing") {
-      if (skin === "vampiro") return imgVampiroPlay;
-      if (skin === "naranja") return imgNaranjaPlay;
-      return imgTamaHappy;
-    }
+    // 1. Prioridad: Acción de COMER (Nom)
     if (currentAction === "eating") {
-      if (skin === "vampiro") return imgVampiroNom;
-      if (skin === "naranja") return imgNaranjaPlay; // Naranja no tiene comer, usamos jugar
+      if (skin === "vampiro") return imgVampiroNom; // gatonom.gif
+      if (skin === "naranja") return imgNaranjaPlay; // Naranja usa jugar (no tiene comer)
       return imgTamaHappy;
     }
 
-    // PRIORIDAD 2: Sueño
+    // 2. Prioridad: Acción de JUGAR
+    if (currentAction === "playing") {
+      if (skin === "vampiro") return imgVampiroPlay; // gatoplay.gif
+      if (skin === "naranja") return imgNaranjaPlay; // gatojuego.gif
+      return imgTamaHappy;
+    }
+
+    // 3. Prioridad: DORMIR (Solo si no hay acción activa)
     if (stats.durmiendo) {
-      if (skin === "vampiro") return imgVampiroMimir;
-      if (skin === "naranja") return imgNaranjaMimir;
+      if (skin === "vampiro") return imgVampiroMimir; // gatomimir.gif
+      if (skin === "naranja") return imgNaranjaMimir; // gatomimirnaranja.gif
       return imgTamaMimir;
     }
 
-    // PRIORIDAD 3: Estados normales
+    // 4. Estado IDLE (Reposo)
     switch (skin) {
       case "vampiro":
-        return imgVampiroIdle;
+        return imgVampiroIdle; // gatofeliz.gif
       case "naranja":
-        return imgNaranjaIdle;
+        return imgNaranjaIdle; // gatoidle.gif
       default:
-        if (stats.hunger > 80) return imgTamaTriste;
-        return imgTamaNeutral;
+        return stats.hunger > 80 ? imgTamaTriste : imgTamaNeutral;
     }
   };
 
   return (
     <div className="main-wrapper">
-      {" "}
-      {/* Este es el fondo de la pantalla */}
       <div className="app-container">
-        <h1>GATITO VIRTUAL</h1>
+        <h1 className="witchy-title">✧ FAMILIAR MÁGICO ✧</h1>
         <StatusScreen
           health={stats.health}
           hunger={stats.hunger}
@@ -137,9 +119,9 @@ function App() {
           petImage={getCurrentImage()}
           onTick={() => {}}
         />
-        <div style={{ marginTop: "15px" }}>
+        <div style={{ marginTop: "20px" }}>
           <Button
-            texto="🔄 Cambiar Gato"
+            texto="Cambio de personaje"
             color="lila-button"
             onClick={() => setShowMenu(true)}
             desactivado={false}
@@ -147,53 +129,70 @@ function App() {
         </div>
         {!stats.is_alive ? (
           <Button
-            texto="Revivir❤️"
+            texto="REVIVIR ✨"
             color="rojo-button"
             onClick={() => fetch(`${API_URL}/revivir`, { method: "POST" })}
             desactivado={false}
           />
         ) : (
           <Controls
-            comer={comer}
-            jugar={jugar}
-            dormir={dormir}
+            comer={() => {
+              startAction("eating");
+              fetch(`${API_URL}/comer`, { method: "POST" });
+            }}
+            jugar={() => {
+              startAction("playing");
+              fetch(`${API_URL}/jugar`, { method: "POST" });
+            }}
+            dormir={() => {
+              setCurrentAction(null);
+              fetch(`${API_URL}/dormir`, { method: "POST" });
+            }}
             vivo={stats.is_alive}
           />
         )}
       </div>
+
       {showMenu && (
-        <div className="avatar-menu-overlay" onClick={() => setShowMenu(false)}>
-          <div className="avatar-menu" onClick={(e) => e.stopPropagation()}>
-            <div className="avatar-grid">
+        <div className="menu-overlay" onClick={() => setShowMenu(false)}>
+          <div className="menu-card" onClick={(e) => e.stopPropagation()}>
+            <h2 className="menu-title">Vincular Alma</h2>
+            <div className="character-grid">
               <div
-                className="avatar-option"
+                className={`char-card ${skin === "original" ? "active" : ""}`}
                 onClick={() => {
                   setSkin("original");
                   setShowMenu(false);
                 }}
               >
-                <img src={imgTamaHappy} alt="Tama" />
-                <span>Tama</span>
+                <div className="char-preview">
+                  <img src={imgTamaNeutral} />
+                </div>
+                <span>TAMA</span>
               </div>
               <div
-                className="avatar-option"
+                className={`char-card ${skin === "vampiro" ? "active" : ""}`}
                 onClick={() => {
                   setSkin("vampiro");
                   setShowMenu(false);
                 }}
               >
-                <img src={imgVampiroIdle} alt="Sombrío" />
-                <span>Sombrío</span>
+                <div className="char-preview">
+                  <img src={imgVampiroIdle} />
+                </div>
+                <span>BLANCO</span>
               </div>
               <div
-                className="avatar-option"
+                className={`char-card ${skin === "naranja" ? "active" : ""}`}
                 onClick={() => {
                   setSkin("naranja");
                   setShowMenu(false);
                 }}
               >
-                <img src={imgNaranjaIdle} alt="Naranja" />
-                <span>Naranja</span>
+                <div className="char-preview">
+                  <img src={imgNaranjaIdle} />
+                </div>
+                <span>NARANJA</span>
               </div>
             </div>
           </div>
