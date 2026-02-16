@@ -1,11 +1,9 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    cssInjectedByJsPlugin() as any, // ← Soluciona el error de tipos
-  ],
+  plugins: [react()],
+  // ✅ SIN configuración de build
+  // La solución real está en usar ?inline en el CSS
 })

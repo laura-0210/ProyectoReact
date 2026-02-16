@@ -6,7 +6,7 @@ import { StatusScreen } from "./components/StatusScreen";
 import Controls from "./components/Controls";
 import Button from "./components/Button";
 
-// Imágenes Originales
+// Imágenes
 import imgFeliz from "./assets/sprites/happy.gif";
 import imgEnfadado from "./assets/sprites/enfadado.jpeg";
 import imgTriste from "./assets/sprites/triste.jpeg";
@@ -14,9 +14,8 @@ import imgNeutral from "./assets/sprites/neutral.jpeg";
 import imgDormir from "./assets/sprites/dormir.jpeg";
 import imgMuerteCaida from "./assets/sprites/muerte2.jpeg";
 import imgMuerteFinal from "./assets/sprites/muerte3.jpeg";
-
-// Nueva Imagen Drácula - ASEGÚRATE QUE LA RUTA ES CORRECTA
 import imgDracula from "./assets/sprites/draculacat.png";
+
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 function App() {
@@ -32,9 +31,8 @@ function App() {
   const [skin, setSkin] = useState<"original" | "dracula">("original");
   const [showMenu, setShowMenu] = useState(false);
 
-  // DEBUG: Descomentar para verificar que las imágenes se cargan
+  // DEBUG
   useEffect(() => {
-    console.log("🖼️ Imagen Drácula cargada:", imgDracula);
     console.log("🎨 Skin actual:", skin);
   }, [skin]);
 
@@ -95,16 +93,8 @@ function App() {
     setMuerteFinalizada(false);
   };
 
-  // Función para obtener la imagen actual
   const getCurrentImage = () => {
-    // Si el skin es Drácula, siempre devolvemos su imagen
-    if (skin === "dracula") {
-      // Incluso si está muerto, podrías mostrar el drácula
-      // O puedes hacer una lógica especial aquí
-      return imgDracula;
-    }
-
-    // Lógica Original para las demás skins
+    if (skin === "dracula") return imgDracula;
     if (stats.health <= 0) {
       if (muerteFinalizada) return imgMuerteFinal;
       return imgMuerteCaida;
@@ -128,7 +118,6 @@ function App() {
         onTick={() => {}}
       />
 
-      {/* Botón para cambiar avatar */}
       <div style={{ marginTop: "10px" }}>
         <Button
           texto="🔄 Cambiar Avatar"
@@ -154,37 +143,31 @@ function App() {
         />
       )}
 
-      {/* Modal de selección de avatar */}
       {showMenu && (
         <div className="avatar-menu-overlay" onClick={() => setShowMenu(false)}>
           <div className="avatar-menu" onClick={(e) => e.stopPropagation()}>
             <h3>✨ Elige tu Mascota ✨</h3>
 
             <div className="avatar-grid">
-              {/* Opción Original */}
               <div
                 className={`avatar-option ${skin === "original" ? "selected" : ""}`}
                 onClick={() => {
                   setSkin("original");
                   setShowMenu(false);
-                  console.log("✅ Cambiado a: original");
                 }}
               >
                 <img src={imgFeliz} alt="Original" className="preview-normal" />
                 <span className="avatar-name">Tama</span>
               </div>
 
-              {/* Opción Drácula */}
               <div
                 className={`avatar-option ${skin === "dracula" ? "selected" : ""}`}
                 onClick={() => {
                   setSkin("dracula");
                   setShowMenu(false);
-                  console.log("✅ Cambiado a: dracula");
-                  console.log("🖼️ URL imagen:", imgDracula);
                 }}
               >
-                {/* Preview del drácula animado */}
+                {/* PREVIEW DEL MENÚ - CORREGIDO */}
                 <div
                   className="preview-dracula"
                   style={{
@@ -194,7 +177,8 @@ function App() {
                     backgroundSize: "600% 100%",
                     backgroundRepeat: "no-repeat",
                     imageRendering: "pixelated",
-                    animation: "sprite-play 0.8s steps(5) infinite",
+                    // CORRECCIÓN AQUÍ: Usamos sprite-play-global
+                    animation: "sprite-play-global 0.8s steps(5) infinite",
                   }}
                 />
                 <span className="avatar-name">Vampiro</span>

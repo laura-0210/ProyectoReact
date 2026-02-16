@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import "./StatusScreen.css"; // ← Import NORMAL (sin ?inline)
+import "./StatusScreen.css";
 
 interface StatusScreenProps {
   health: number;
@@ -16,11 +16,13 @@ export const StatusScreen = ({
   petImage,
   onTick,
 }: StatusScreenProps) => {
-  const isDracula =
-    petImage &&
-    (petImage.includes("dracula") ||
-      petImage.includes("Dracula") ||
-      petImage.includes("draculacat"));
+  
+  // Detección robusta del vampiro
+  const isDracula = petImage && (
+    petImage.includes("dracula") || 
+    petImage.includes("Dracula") || 
+    petImage.includes("draculacat")
+  );
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -35,16 +37,33 @@ export const StatusScreen = ({
     return "bg-danger";
   };
 
+  // --- ESTILO "NUCLEAR" PARA EL DRÁCULA ---
+  // Definido aquí para que la minificación de Vercel no lo toque
+  const draculaStyle = {
+    backgroundImage: `url(${petImage})`,
+    width: '120px',
+    height: '120px',
+    backgroundRepeat: 'no-repeat',
+    
+    // Ancho total de la tira (600% porque son 6 frames)
+    backgroundSize: '600% 100%', 
+    
+    backgroundPosition: '0 0',
+    imageRendering: 'pixelated' as const,
+    
+    // Animación global definida en App.css
+    animation: 'sprite-play-global 0.8s steps(5) infinite',
+    
+    margin: '0 auto'
+  };
+
   return (
     <div className="gameboy-screen">
       <div className="sprite-container">
+        
         {isDracula ? (
-          <div
-            className="pixel-sprite dracula-anim"
-            style={{
-              backgroundImage: `url(${petImage})`,
-            }}
-          />
+          /* APLICAMOS EL ESTILO DIRECTO */
+          <div style={draculaStyle} />
         ) : (
           <img
             src={petImage}
@@ -52,65 +71,39 @@ export const StatusScreen = ({
             className="pixel-sprite"
           />
         )}
+        
       </div>
 
       <div className="alert-area">
         {hunger > 80 && (
-          <div className="alert alert-danger pixel-alert">
-            ¡TENGO HAMBRE! 🍖
-          </div>
+          <div className="alert alert-danger pixel-alert">¡HAMBRE! 🍖</div>
         )}
         {happiness < 20 && (
-          <div className="alert alert-warning pixel-alert">ESTOY TRISTE 😢</div>
+          <div className="alert alert-warning pixel-alert">TRISTE 😢</div>
         )}
         {health < 20 && (
-          <div className="alert alert-danger pixel-alert">¡ME MUERO! 🚑</div>
+          <div className="alert alert-danger pixel-alert">¡SALUD BAJA! 🚑</div>
         )}
       </div>
 
       <div className="stats-container">
+        {/* Barras de estado... */}
         <div className="stat-row">
           <span className="pixel-text">SALUD</span>
-          <div
-            className="progress"
-            style={{ height: "20px", border: "2px solid #0f380f" }}
-          >
-            <div
-              className={`progress-bar ${getBgClass(health)}`}
-              style={{ width: `${health}%` }}
-            >
-              {health}%
-            </div>
+          <div className="progress" style={{ height: "20px", border: "2px solid #0f380f" }}>
+            <div className={`progress-bar ${getBgClass(health)}`} style={{ width: `${health}%` }}>{health}%</div>
           </div>
         </div>
-
         <div className="stat-row">
           <span className="pixel-text">HAMBRE</span>
-          <div
-            className="progress"
-            style={{ height: "20px", border: "2px solid #0f380f" }}
-          >
-            <div
-              className={`progress-bar ${hunger > 80 ? "bg-danger" : "bg-info"}`}
-              style={{ width: `${hunger}%` }}
-            >
-              {hunger}%
-            </div>
+          <div className="progress" style={{ height: "20px", border: "2px solid #0f380f" }}>
+            <div className={`progress-bar ${hunger > 80 ? "bg-danger" : "bg-info"}`} style={{ width: `${hunger}%` }}>{hunger}%</div>
           </div>
         </div>
-
         <div className="stat-row">
           <span className="pixel-text">FELICIDAD</span>
-          <div
-            className="progress"
-            style={{ height: "20px", border: "2px solid #0f380f" }}
-          >
-            <div
-              className="progress-bar bg-warning"
-              style={{ width: `${happiness}%`, color: "black" }}
-            >
-              {happiness}%
-            </div>
+          <div className="progress" style={{ height: "20px", border: "2px solid #0f380f" }}>
+            <div className="progress-bar bg-warning" style={{ width: `${happiness}%`, color: "black" }}>{happiness}%</div>
           </div>
         </div>
       </div>

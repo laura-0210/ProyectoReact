@@ -1,5 +1,3 @@
-/* src/App.css */
-
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 html, body, #root {
@@ -38,7 +36,7 @@ h1 {
   letter-spacing: 1px;
 }
 
-/* --- Menú de Avatares Cuqui --- */
+/* --- Menú de Avatares --- */
 .avatar-menu-overlay {
   position: fixed;
   top: 0;
@@ -109,68 +107,21 @@ h1 {
   color: #555;
 }
 
-/* ============================================
-   ANIMACIÓN DEL SPRITE DEL DRÁCULA
-   ============================================ */
-
-/* Para el preview en el menú (más pequeño) */
-.preview-dracula {
-  width: 64px;    /* Ancho de UN frame (ajusta según tu sprite real) */
-  height: 64px;   /* Alto de UN frame */
-  overflow: hidden; /* IMPORTANTE: ocultar el resto de frames */
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.preview-dracula img {
-  width: 384px;   /* Ancho total del sprite: 64px × 6 frames = 384px */
-  height: 64px;
-  object-fit: none;
-  object-position: left center;
-  image-rendering: pixelated;
-  animation: sprite-dracula-preview 1.2s steps(6) infinite;
-}
-
-/* Para el sprite GRANDE en la pantalla de estado */
-.sprite-dracula-large {
-  width: 120px !important;   /* Frame individual más grande */
-  height: 120px !important;
-  overflow: hidden;
-  display: inline-block;
-  margin: 0 auto;
-}
-
-.sprite-dracula-large img {
-  width: 720px;   /* 120px × 6 frames */
-  height: 120px;
-  object-fit: none;
-  image-rendering: pixelated;
-  animation: sprite-dracula-large 1.2s steps(6) infinite;
-}
-
-/* Keyframes para el preview pequeño */
-@keyframes sprite-dracula-preview {
-  from { transform: translateX(0); }
-  to { transform: translateX(-384px); } /* Mover todo el ancho del sprite */
-}
-
-/* Keyframes para el sprite grande */
-@keyframes sprite-dracula-large {
-  from { transform: translateX(0); }
-  to { transform: translateX(-720px); }
-}
-
-/* Clase para sprites normales (sin animación) */
 .preview-normal {
   width: 50px;
   height: 50px;
   object-fit: contain;
 }
 
-/* Animación de entrada del menú */
 @keyframes popIn {
   from { transform: scale(0.5); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
+}
+
+/* ========================================================
+   ANIMACIÓN GLOBAL "NUCLEAR" (Protegida de Vercel)
+   ======================================================== */
+@keyframes sprite-play-global {
+  from { background-position: 0% 0%; }
+  to { background-position: 100% 0%; }
 }
