@@ -124,7 +124,6 @@ function App() {
         hunger={stats.hunger}
         happiness={stats.happiness}
         petImage={getCurrentImage()}
-        skin={skin} // <--- AÑADE ESTO (pasamos "original" o "dracula")
         // Pasamos una clase extra si es dracula para recortarlo en la pantalla principal también
         // (Esto es un truco rápido, idealmente editarías StatusScreen también)
         onTick={() => {}}
@@ -184,11 +183,11 @@ function App() {
                 }}
               >
                 {/* Aquí usamos la clase especial para recortar la tira de sprites */}
-                <img
-                  src={imgDracula}
-                  alt="Dracula"
-                  className="preview-dracula"
+                <div
+                  className="dracula-sprite"
+                  style={{ backgroundImage: `url(${imgDracula})` }}
                 />
+
                 <span className="avatar-name">Vampiro</span>
               </div>
             </div>

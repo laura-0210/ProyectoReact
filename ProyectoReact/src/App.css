@@ -113,43 +113,24 @@ h1 {
   color: #555;
 }
 
-/* --- ANIMACIÓN DEL GATO DRÁCULA EN PANTALLA PRINCIPAL --- */
+/* --- Truco para recortar el Sprite del Drácula --- */
+.dracula-sprite {
+  width: 45px;
+  height: 45px;
 
-/* Clase base para el avatar (para asegurar tamaño) */
-.pet-avatar {
-  height: 120px; /* Tamaño estándar para los originales */
-  object-fit: contain;
-  image-rendering: auto;
-}
+  background-image: url("./assets/sprites/draculacat.png");
+  background-repeat: no-repeat;
 
-/* Clase ESPECÍFICA para cuando es Drácula */
-.pet-avatar.dracula-animation {
-  width: 64px; /* Ancho aproximado de UN solo gato de la tira */
-  height: 64px; /* Alto aproximado */
-
-  /* Truco para recortar: */
-  object-fit: none; /* No estirar la imagen */
-  object-position: 0 0; /* Empezar en el primer gato */
-
-  /* Estilo Pixel Art nítido */
   image-rendering: pixelated;
 
-  /* Hacerlo más grande visualmente sin perder calidad */
-  transform: scale(2.5);
-  margin-top: 20px; /* Un poco de aire si se ve muy arriba por el zoom */
-
-  /* La Animación: steps(6) porque hay 6 gatos en la imagen */
-  animation: spriteWalk 1s steps(6) infinite;
+  animation: draculaWalk 0.8s steps(6) infinite;
 }
 
-/* Definimos cómo se mueve la tira de izquierda a derecha */
-@keyframes spriteWalk {
+@keyframes draculaWalk {
   from {
-    object-position: 0 0;
+    background-position: 0 0;
   }
   to {
-    /* Mueve la imagen hacia la izquierda el 100% de su ancho total */
-    /* Si la animación salta raro, prueba poniendo el ancho exacto en px negativo, ej: -384px */
-    object-position: -100% 0;
+    background-position: -270px 0; /* 45px × 6 frames */
   }
 }
