@@ -182,11 +182,11 @@ function App() {
                 }}
               >
                 {/* Aquí usamos la clase especial para recortar la tira de sprites */}
-                <div
-                  className="dracula-sprite"
-                  style={{ backgroundImage: `url(${imgDracula})` }}
+                <img
+                  src={imgDracula}
+                  alt="Dracula"
+                  className="preview-dracula"
                 />
-
                 <span className="avatar-name">Vampiro</span>
               </div>
             </div>

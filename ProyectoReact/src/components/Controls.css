@@ -7,7 +7,7 @@
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   padding: 30px;
-  box-shadow: 0 10px 0 rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 0 #0000000d;
   max-width: 400px;
   width: 100%;
   transition: all 0.4s ease-in-out; /*para que sea mas cuca la transicion*/
