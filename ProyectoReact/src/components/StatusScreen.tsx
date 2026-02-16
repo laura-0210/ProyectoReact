@@ -23,7 +23,6 @@ export const StatusScreen = ({
   return (
     <div className="gameboy-screen">
       <div className="sprite-container">
-        {/* Usamos una etiqueta img normal para que el GIF brille */}
         <img src={petImage} alt="Mascota" className="pixel-sprite" />
       </div>
 
