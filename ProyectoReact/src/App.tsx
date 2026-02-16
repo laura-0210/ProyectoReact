@@ -18,7 +18,7 @@ import imgMuerteFinal from "./assets/sprites/muerte3.jpeg";
 // Nueva Imagen Drácula
 import imgDracula from "./assets/sprites/draculacat.png";
 
-const API_URL = "http://localhost:8000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 function App() {
   const [stats, setStats] = useState({
