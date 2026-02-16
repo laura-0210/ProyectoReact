@@ -18,7 +18,6 @@ export const StatusScreen = ({
   hunger,
   happiness,
   petImage,
-  skin,
   onTick,
 }: StatusScreenProps) => {
   // Detección robusta del vampiro
