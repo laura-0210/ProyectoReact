@@ -1,5 +1,3 @@
-// src/components/StatusScreen.tsx
-import { useEffect } from "react";
 import "./StatusScreen.css";
 
 interface StatusScreenProps {
@@ -15,7 +13,6 @@ export const StatusScreen = ({
   hunger,
   happiness,
   petImage,
-  onTick,
 }: StatusScreenProps) => {
   const getBgClass = (val: number) => {
     if (val > 50) return "bg-success";
