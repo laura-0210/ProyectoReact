@@ -169,11 +169,11 @@ function App() {
               >
                 {/* PREVIEW DEL MENÚ - CORREGIDO */}
                 <div
-  className="preview-dracula-animated"
-  style={{
-    backgroundImage: `url(${imgDracula})`,
-  }}
-/>
+                  className="preview-dracula-animated"
+                  style={{
+                    backgroundImage: `url(${imgDracula})`,
+                  }}
+                />
                 <span className="avatar-name">Vampiro</span>
               </div>
             </div>
