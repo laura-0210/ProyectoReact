@@ -141,3 +141,12 @@
   from { background-position: 0% 0%; }
   to { background-position: 100% 0%; }
 }
+.preview-dracula-animated {
+  width: 50px;
+  height: 50px;
+  background-size: 600% 100%;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  image-rendering: pixelated;
+  animation: sprite-play-global 0.8s steps(5) infinite;
+}

@@ -19,8 +19,7 @@ export const StatusScreen = ({
   
   // Detección robusta del vampiro
   const isDracula = petImage && (
-    petImage.includes("dracula") || 
-    petImage.includes("Dracula") || 
+  
     petImage.includes("draculacat")
   );
 
