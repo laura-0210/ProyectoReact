@@ -1,11 +1,14 @@
 import { useEffect } from "react";
-import "./StatusScreen.css";
+// import "./StatusScreen.css"; // Asegúrate de que este CSS no tenga conflictos con App.css
+
+export type SkinType = "original" | "dracula";
 
 interface StatusScreenProps {
   health: number;
   hunger: number;
   happiness: number;
   petImage: string;
+  skin: SkinType;
   onTick: () => void;
 }
 
@@ -15,11 +18,12 @@ export const StatusScreen = ({
   happiness,
   petImage,
   onTick,
+  skin,
 }: StatusScreenProps) => {
-  // Detectamos si es la imagen del drácula
-  const isDracula = petImage.includes("dracula");
-
   useEffect(() => {
+    // IMPORTANTE: Este intervalo puede duplicar el de App.tsx.
+    // Si App.tsx ya hace el tick cada 2s, aquí solo necesitas pintar.
+    // Si quieres forzar un refresco visual, está bien, pero cuidado con el rendimiento.
     const timer = setInterval(() => {
       onTick();
     }, 2000);
@@ -34,18 +38,24 @@ export const StatusScreen = ({
 
   return (
     <div className="gameboy-screen">
-      <div className="sprite-container">
-        {/* LÓGICA DE VISUALIZACIÓN CORREGIDA */}
-        {isDracula ? (
-          // OPCIÓN A: Si es Drácula, usamos un DIV con background (Sprite Animation)
-          <div
-            className="pixel-sprite dracula-anim"
-            style={{ backgroundImage: `url(${petImage})` }}
-          />
-        ) : (
-          // OPCIÓN B: Si es normal, usamos la IMG de siempre
-          <img src={petImage} alt="Mascota" className="pixel-sprite" />
-        )}
+      {/* MANTÉN SIEMPRE LA ESTRUCTURA DE IMAGEN.
+         El CSS se encarga de recortar si tiene la clase "dracula-animation" 
+      */}
+      <div
+        className="sprite-container"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "150px",
+        }}
+      >
+        <img
+          src={petImage}
+          alt="Mascota"
+          // AQUÍ ESTÁ LA MAGIA: Si skin es dracula, añade la clase que activa el CSS de App.css
+          className={`pet-avatar ${skin === "dracula" ? "dracula-animation" : ""}`}
+        />
       </div>
 
       <div className="alert-area">
@@ -63,7 +73,7 @@ export const StatusScreen = ({
       </div>
 
       <div className="stats-container">
-        {/* Barras de estado (igual que antes) */}
+        {/* Barras de estado... */}
         <div className="stat-row">
           <span className="pixel-text">SALUD</span>
           <div

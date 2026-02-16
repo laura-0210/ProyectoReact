@@ -124,6 +124,7 @@ function App() {
         hunger={stats.hunger}
         happiness={stats.happiness}
         petImage={getCurrentImage()}
+        skin={skin} // <--- AÑADE ESTO (pasamos "original" o "dracula")
         // Pasamos una clase extra si es dracula para recortarlo en la pantalla principal también
         // (Esto es un truco rápido, idealmente editarías StatusScreen también)
         onTick={() => {}}
