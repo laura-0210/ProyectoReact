@@ -1,7 +1,7 @@
-// src/components/StatusScreen.tsx
 import { useEffect } from "react";
 import "./StatusScreen.css";
 
+// Definimos el tipo de Skin para que TypeScript no se queje
 export type SkinType = "original" | "dracula";
 
 interface StatusScreenProps {
@@ -9,7 +9,7 @@ interface StatusScreenProps {
   hunger: number;
   happiness: number;
   petImage: string;
-  skin: SkinType;
+  skin: SkinType; // Añadimos la prop skin
   onTick: () => void;
 }
 
@@ -18,14 +18,12 @@ export const StatusScreen = ({
   hunger,
   happiness,
   petImage,
+  skin,
   onTick,
 }: StatusScreenProps) => {
-  // Detección robusta del vampiro
-  const isDracula =
-    petImage &&
-    (petImage.includes("dracula") ||
-      petImage.includes("Dracula") ||
-      petImage.includes("draculacat"));
+  // Detectamos si es Drácula caminando (basado en la skin, no solo en el nombre del archivo)
+  const isWalkingDracula =
+    skin === "dracula" && petImage.includes("draculacat");
 
   useEffect(() => {
     const timer = setInterval(() => onTick(), 2000);
@@ -38,43 +36,26 @@ export const StatusScreen = ({
     return "bg-danger";
   };
 
-  // --- ESTILO "NUCLEAR" PARA EL DRÁCULA ---
-  // Definido aquí para que la minificación de Vercel no lo toque
-
   return (
     <div className="gameboy-screen">
       <div className="sprite-container">
-        {isDracula ? (
-          /* APLICAMOS EL ESTILO DIRECTO */
-          <div
-            className="dracula-sprite"
-            style={{ backgroundImage: `url(${petImage})` }}
-          />
+        {isWalkingDracula ? (
+          /* USAMOS LA TÉCNICA DEL MENÚ: Ventana (div) + Imagen (img) */
+          <div className="sprite-dracula-large">
+            <img src={petImage} alt="Vampiro Animado" />
+          </div>
         ) : (
+          /* IMAGEN NORMAL: Para Tama original o Drácula muerto/durmiendo */
           <img src={petImage} alt="Mascota" className="pixel-sprite" />
         )}
       </div>
 
-      <div className="alert-area">
-        {hunger > 80 && (
-          <div className="alert alert-danger pixel-alert">¡HAMBRE! 🍖</div>
-        )}
-        {happiness < 20 && (
-          <div className="alert alert-warning pixel-alert">TRISTE 😢</div>
-        )}
-        {health < 20 && (
-          <div className="alert alert-danger pixel-alert">¡SALUD BAJA! 🚑</div>
-        )}
-      </div>
-
+      {/* --- EL RESTO DE TUS ESTADÍSTICAS (Salud, Hambre...) --- */}
       <div className="stats-container">
-        {/* Barras de estado... */}
+        {/* Mantén aquí tus filas de Salud, Hambre y Felicidad igual que las tenías */}
         <div className="stat-row">
           <span className="pixel-text">SALUD</span>
-          <div
-            className="progress"
-            style={{ height: "20px", border: "2px solid #0f380f" }}
-          >
+          <div className="progress">
             <div
               className={`progress-bar ${getBgClass(health)}`}
               style={{ width: `${health}%` }}
@@ -85,10 +66,7 @@ export const StatusScreen = ({
         </div>
         <div className="stat-row">
           <span className="pixel-text">HAMBRE</span>
-          <div
-            className="progress"
-            style={{ height: "20px", border: "2px solid #0f380f" }}
-          >
+          <div className="progress">
             <div
               className={`progress-bar ${hunger > 80 ? "bg-danger" : "bg-info"}`}
               style={{ width: `${hunger}%` }}
@@ -99,10 +77,7 @@ export const StatusScreen = ({
         </div>
         <div className="stat-row">
           <span className="pixel-text">FELICIDAD</span>
-          <div
-            className="progress"
-            style={{ height: "20px", border: "2px solid #0f380f" }}
-          >
+          <div className="progress">
             <div
               className="progress-bar bg-warning"
               style={{ width: `${happiness}%`, color: "black" }}

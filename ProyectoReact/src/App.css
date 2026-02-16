@@ -1,5 +1,10 @@
+/* src/App.css */
+
 @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 
+/* ========================================================
+   1. ESTILOS BASE Y CONTENEDORES
+   ======================================================== */
 html,
 body,
 #root {
@@ -38,7 +43,9 @@ h1 {
   letter-spacing: 1px;
 }
 
-/* --- Menú de Avatares --- */
+/* ========================================================
+   2. MENÚ DE AVATARES
+   ======================================================== */
 .avatar-menu-overlay {
   position: fixed;
   top: 0;
@@ -61,12 +68,6 @@ h1 {
   text-align: center;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.avatar-menu h3 {
-  color: #880e4f;
-  font-family: "Fredoka", sans-serif;
-  margin-bottom: 15px;
 }
 
 .avatar-grid {
@@ -93,7 +94,6 @@ h1 {
 .avatar-option:hover {
   transform: translateY(-5px);
   border-color: #ba68c8;
-  box-shadow: 0 5px 15px rgba(186, 104, 200, 0.3);
 }
 
 .avatar-option.selected {
@@ -109,12 +109,77 @@ h1 {
   color: #555;
 }
 
+/* ========================================================
+   3. ANIMACIÓN DEL VAMPIRO (MÉTODO VIEWPORT)
+   ======================================================== */
+
+/* La Ventana (Ojo de cerradura) */
+.sprite-dracula-large {
+  width: 120px !important;
+  height: 120px !important;
+  overflow: hidden; /* IMPORTANTE: corta los otros 5 gatos */
+  position: relative;
+  display: flex;
+  justify-content: flex-start; /* Alinea la tira al inicio */
+  align-items: center;
+  margin: 0 auto;
+}
+
+/* La Tira de imágenes (Los 6 gatos) */
+.sprite-dracula-large img {
+  width: 720px !important; /* 120px * 6 frames */
+  height: 120px !important;
+  object-fit: none; /* Evita que la imagen se deforme o escale */
+  image-rendering: pixelated;
+  /* Animación: mueve la tira hacia la izquierda */
+  animation: caminar-vampiro 0.8s steps(6) infinite !important;
+}
+
+/* Keyframes Globales */
+@keyframes caminar-vampiro {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  } /* Mueve los 720px hacia la izquierda */
+}
+
+/* Versión para el Preview del Menú (más pequeño: 50px) */
+.preview-dracula-animated {
+  width: 50px !important;
+  height: 50px !important;
+  overflow: hidden;
+  position: relative;
+}
+
+.preview-dracula-animated img {
+  width: 300px !important; /* 50px * 6 frames */
+  height: 50px !important;
+  object-fit: none;
+  image-rendering: pixelated;
+  animation: caminar-vampiro 0.8s steps(6) infinite !important;
+}
+
+/* ========================================================
+   4. SPRITES NORMALES (Gifs o Tama original)
+   ======================================================== */
+.pixel-sprite {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
 .preview-normal {
   width: 50px;
   height: 50px;
   object-fit: contain;
 }
 
+/* ========================================================
+   5. EFECTOS ADICIONALES
+   ======================================================== */
 @keyframes popIn {
   from {
     transform: scale(0.5);
@@ -124,25 +189,4 @@ h1 {
     transform: scale(1);
     opacity: 1;
   }
-}
-
-/* ========================================================
-   ANIMACIÓN GLOBAL "NUCLEAR" (Protegida de Vercel)
-   ======================================================== */
-@keyframes sprite-play-global {
-  from {
-    background-position: 0% 0%;
-  }
-  to {
-    background-position: 100% 0%;
-  }
-}
-.preview-dracula-animated {
-  width: 50px;
-  height: 50px;
-  background-size: 600% 100%;
-  background-repeat: no-repeat;
-  background-position: 0 0;
-  image-rendering: pixelated;
-  animation: sprite-play-global 0.8s steps(5) infinite;
 }

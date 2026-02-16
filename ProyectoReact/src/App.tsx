@@ -115,6 +115,7 @@ function App() {
         hunger={stats.hunger}
         happiness={stats.happiness}
         petImage={getCurrentImage()}
+        skin={skin} // <--- AÑADE ESTA LÍNEA AQUÍ
         onTick={() => {}}
       />
 
