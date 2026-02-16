@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-// import "./StatusScreen.css";
 
 export type SkinType = "original" | "dracula";
 
@@ -7,7 +6,7 @@ interface StatusScreenProps {
   health: number;
   hunger: number;
   happiness: number;
-  petImage: string; // La URL de la imagen
+  petImage: string;
   skin: SkinType;
   onTick: () => void;
 }
@@ -33,14 +32,12 @@ export const StatusScreen = ({
     return "bg-danger";
   };
 
-  // --- DETECCIÓN INTELIGENTE ---
-  // Solo activamos el modo sprite si estamos en modo Drácula
-  // Y la imagen actual es la tira de sprites (draculacat).
-  // Si petImage es "muerte3.jpeg", esto será falso y mostrará la img normal.
+  // Lógica Maestra: Solo animamos si es dracula Y la imagen es la del gato (no muerte)
   const isSpriteSheet = skin === "dracula" && petImage.includes("draculacat");
 
   return (
     <div className="gameboy-screen">
+      {/* Contenedor centrado */}
       <div
         className="sprite-container"
         style={{
@@ -51,18 +48,35 @@ export const StatusScreen = ({
         }}
       >
         {isSpriteSheet ? (
-          /* MODO SPRITE: Un DIV con la imagen de fondo que se mueve */
+          /* --- MODO SPRITE (Drácula vivo) --- */
+          /* Usamos un DIV como ventana para mostrar solo 1 trozo de la imagen */
           <div
-            className="dracula-sprite"
-            style={{ backgroundImage: `url(${petImage})` }}
+            style={{
+              width: "64px", // Ancho exacto de 1 gato
+              height: "64px", // Alto exacto de 1 gato
+              backgroundImage: `url(${petImage})`,
+              backgroundRepeat: "no-repeat",
+              // EL TRUCO: 600% porque hay 6 gatos en la tira
+              backgroundSize: "600% 100%",
+              imageRendering: "pixelated",
+              transform: "scale(2.5)",
+              marginTop: "20px",
+              animation: "draculaWalk 1s steps(6) infinite",
+            }}
           />
         ) : (
-          /* MODO NORMAL: Una imagen estática (muerto, original, etc) */
-          <img src={petImage} alt="Mascota" className="pet-avatar" />
+          /* --- MODO NORMAL (Tama original o Drácula muerto) --- */
+          <img
+            src={petImage}
+            alt="Mascota"
+            className="pet-avatar"
+            // Aseguramos que la imagen normal no se estire rara
+            style={{ height: "120px", objectFit: "contain" }}
+          />
         )}
       </div>
 
-      {/* ... (El resto de tus alertas y barras sigue igual) ... */}
+      {/* ... (Resto de alertas y barras igual que antes) ... */}
       <div className="alert-area">
         {hunger > 80 && (
           <div className="alert alert-danger pixel-alert">¡HAMBRE! 🍖</div>
@@ -76,8 +90,6 @@ export const StatusScreen = ({
       </div>
 
       <div className="stats-container">
-        {/* Aquí van tus barras de progreso (Salud, Hambre, Felicidad) */}
-        {/* (Copia tus barras de progreso del código anterior aquí si las borraste) */}
         <div className="stat-row">
           <span className="pixel-text">SALUD</span>
           <div
