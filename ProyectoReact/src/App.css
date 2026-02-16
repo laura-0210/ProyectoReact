@@ -1,129 +1,28 @@
-/* src/App.css */
+/* --- App.css --- */
 
-@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
-
-html,
-body,
-#root {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #ffc2d1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.app-container {
-  background-color: #fffcf0;
-  padding: 35px;
-  border-radius: 35px;
-
-  border: 5px solid #ece0c0;
-  box-shadow:
-    inset 0 -10px 20px rgba(200, 180, 150, 0.2),
-    inset 0 5px 10px rgba(255, 255, 255, 0.9),
-    0 20px 40px rgba(255, 150, 180, 0.3);
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-h1 {
-  color: #9c8475;
-  text-shadow: 2px 2px 0px #fffcf0;
-  margin-bottom: 25px;
-  font-size: 1.5rem;
-  font-family: "Press Start 2P", cursive, sans-serif;
-  line-height: 1.5;
-  letter-spacing: 1px;
-}
-
-/* --- Menú de Avatares Cuqui --- */
-.avatar-menu-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Fondo oscuro transparente */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 100;
-  backdrop-filter: blur(2px);
-}
-
-.avatar-menu {
-  background: #fff0f5; /* Rosa muy clarito */
-  border: 4px solid #f48fb1;
-  border-radius: 20px;
-  padding: 20px;
-  text-align: center;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.avatar-menu h3 {
-  color: #880e4f;
-  font-family: "Fredoka", sans-serif;
-  margin-bottom: 15px;
-}
-
-.avatar-grid {
-  display: flex;
-  gap: 15px;
-  justify-content: center;
-}
-
-.avatar-option {
-  background: white;
-  border: 3px solid #e1bee7;
-  border-radius: 15px;
-  padding: 10px;
-  cursor: pointer;
-  transition: all 0.2s;
-  width: 100px;
+/* Clase base para imágenes normales (Tama original, muerte, dormir, etc.) */
+.pet-avatar {
   height: 120px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  object-fit: contain;
+  image-rendering: auto;
 }
 
-.avatar-option:hover {
-  transform: translateY(-5px);
-  border-color: #ba68c8;
-  box-shadow: 0 5px 15px rgba(186, 104, 200, 0.3);
-}
-
-.avatar-option.selected {
-  border-color: #4caf50;
-  background-color: #e8f5e9;
-  box-shadow: 0 0 10px #4caf50;
-}
-
-.avatar-name {
-  margin-top: 8px;
-  font-size: 14px;
-  font-weight: bold;
-  color: #555;
-}
-
-/* --- Truco para recortar el Sprite del Drácula --- */
+/* --- CLASE NUEVA PARA EL DRÁCULA (Sprite Sheet) --- */
 .dracula-sprite {
-  width: 45px;
-  height: 45px;
+  width: 64px; /* Ancho de UN solo gato (ajusta si se ve pequeño/grande) */
+  height: 64px; /* Alto de UN solo gato */
 
-  background-image: url("./assets/sprites/draculacat.png");
+  /* 1. Hacemos que la imagen de fondo sea 6 veces el ancho del div (porque son 6 gatos) */
+  background-size: 600% 100%;
   background-repeat: no-repeat;
 
+  /* 2. Pixel art nítido y zoom */
   image-rendering: pixelated;
+  transform: scale(2.5); /* Zoom para que se vea bien en pantalla */
+  margin-top: 20px;
 
-  animation: draculaWalk 0.8s steps(6) infinite;
+  /* 3. La Animación: Mover el fondo, no el div */
+  animation: draculaWalk 1s steps(6) infinite;
 }
 
 @keyframes draculaWalk {
@@ -131,6 +30,6 @@ h1 {
     background-position: 0 0;
   }
   to {
-    background-position: -270px 0; /* 45px × 6 frames */
-  }
+    background-position: 100% 0;
+  } /* Recorre toda la tira hasta el final */
 }
