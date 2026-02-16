@@ -1,3 +1,4 @@
+// src/components/StatusScreen.tsx
 import "./StatusScreen.css";
 
 interface StatusScreenProps {
@@ -39,6 +40,7 @@ export const StatusScreen = ({
       </div>
 
       <div className="stats-container">
+        {/* Barras de progreso con clases dinámicas */}
         <div className="stat-row">
           <span className="pixel-text">SALUD</span>
           <div className="progress">

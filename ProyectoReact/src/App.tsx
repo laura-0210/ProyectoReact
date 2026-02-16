@@ -1,3 +1,4 @@
+// src/App.tsx
 import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -6,15 +7,23 @@ import { StatusScreen } from "./components/StatusScreen";
 import Controls from "./components/Controls";
 import Button from "./components/Button";
 
-// Imágenes
+// --- PERSONAJE 1: ORIGINAL (Tama) ---
 import imgFeliz from "./assets/sprites/happy.gif";
-import imgEnfadado from "./assets/sprites/enfadado.jpeg";
 import imgTriste from "./assets/sprites/triste.jpeg";
-import imgNeutral from "./assets/sprites/neutral.jpeg";
 import imgDormir from "./assets/sprites/dormir.jpeg";
-import imgMuerteCaida from "./assets/sprites/muerte2.jpeg";
-import imgMuerteFinal from "./assets/sprites/muerte3.jpeg";
-import imgDracula from "./assets/sprites/draculacat.png";
+
+// --- PERSONAJE 2: SOMBRÍO (Vampiro GIFs) ---
+import imgVampiroIdle from "./assets/sprites/gatonom.gif";
+import imgVampiroPlay from "./assets/sprites/gatoplay.gif";
+import imgVampiroTriste from "./assets/sprites/gatotriste.gif";
+
+// --- PERSONAJE 3: NARANJA ---
+import imgNaranjaIdle from "./assets/sprites/gatoidle.gif";
+import imgNaranjaPlay from "./assets/sprites/gatojuego.gif";
+import imgNaranjaMimir from "./assets/sprites/gatomimirnaranja.gif";
+
+// COMÚN
+import imgMuerte from "./assets/sprites/muerte3.jpeg";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
@@ -27,83 +36,56 @@ function App() {
     is_alive: true,
   });
 
-  const [muerteFinalizada, setMuerteFinalizada] = useState(false);
-  const [skin, setSkin] = useState<"original" | "dracula">("original");
+  const [skin, setSkin] = useState<"original" | "vampiro" | "naranja">(
+    "original",
+  );
   const [showMenu, setShowMenu] = useState(false);
+  const [isAnimatingPlay, setIsAnimatingPlay] = useState(false);
 
-  // DEBUG
-  useEffect(() => {
-    console.log("🎨 Skin actual:", skin);
-  }, [skin]);
-
-  const fetchEstado = async () => {
-    try {
-      const response = await fetch(`${API_URL}/estado`);
-      const data = await response.json();
-      setStats(data);
-    } catch (error) {
-      console.error("Error conectando con el backend:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchEstado();
-  }, []);
-
+  // Sincronización con Backend
   useEffect(() => {
     const timer = setInterval(async () => {
       try {
-        const response = await fetch(`${API_URL}/tick`, { method: "POST" });
-        const data = await response.json();
+        const res = await fetch(`${API_URL}/tick`, { method: "POST" });
+        const data = await res.json();
         setStats(data);
-
-        if (!data.is_alive && !muerteFinalizada) {
-          setTimeout(() => setMuerteFinalizada(true), 3000);
-        }
-      } catch (error) {
-        console.error("El servidor está apagado o no responde");
+      } catch (e) {
+        console.error("Backend offline");
       }
     }, 2000);
-
     return () => clearInterval(timer);
-  }, [muerteFinalizada]);
-
-  const comer = async () => {
-    const res = await fetch(`${API_URL}/comer`, { method: "POST" });
-    const data = await res.json();
-    setStats(data);
-  };
+  }, []);
 
   const jugar = async () => {
-    const res = await fetch(`${API_URL}/jugar`, { method: "POST" });
-    const data = await res.json();
-    setStats(data);
+    setIsAnimatingPlay(true);
+    await fetch(`${API_URL}/jugar`, { method: "POST" });
+    setTimeout(() => setIsAnimatingPlay(false), 2500); // 2.5 seg de animación
   };
 
-  const dormir = async () => {
-    const res = await fetch(`${API_URL}/dormir`, { method: "POST" });
-    const data = await res.json();
-    setStats(data);
-  };
+  const comer = () => fetch(`${API_URL}/comer`, { method: "POST" });
+  const dormir = () => fetch(`${API_URL}/dormir`, { method: "POST" });
+  const revivir = () => fetch(`${API_URL}/revivir`, { method: "POST" });
 
-  const revivir = async () => {
-    const res = await fetch(`${API_URL}/revivir`, { method: "POST" });
-    const data = await res.json();
-    setStats(data);
-    setMuerteFinalizada(false);
-  };
-
+  // --- LÓGICA DE IMAGEN POR PERSONAJE ---
   const getCurrentImage = () => {
-    if (skin === "dracula") return imgDracula;
-    if (stats.health <= 0) {
-      if (muerteFinalizada) return imgMuerteFinal;
-      return imgMuerteCaida;
+    if (!stats.is_alive) return imgMuerte;
+
+    switch (skin) {
+      case "vampiro":
+        if (isAnimatingPlay) return imgVampiroPlay;
+        if (stats.hunger > 70) return imgVampiroTriste;
+        return imgVampiroIdle;
+
+      case "naranja":
+        if (stats.durmiendo) return imgNaranjaMimir;
+        if (isAnimatingPlay) return imgNaranjaPlay;
+        return imgNaranjaIdle;
+
+      default: // Original / Tama
+        if (stats.durmiendo) return imgDormir;
+        if (stats.hunger > 70 || stats.happiness < 30) return imgTriste;
+        return imgFeliz;
     }
-    if (stats.durmiendo) return imgDormir;
-    if (stats.hunger > 80) return imgEnfadado;
-    if (stats.happiness < 30) return imgTriste;
-    if (stats.happiness > 70) return imgFeliz;
-    return imgNeutral;
   };
 
   return (
@@ -120,7 +102,7 @@ function App() {
 
       <div style={{ marginTop: "10px" }}>
         <Button
-          texto="🔄 Cambiar Avatar"
+          texto="🔄 Cambiar Personaje"
           color="lila-button"
           onClick={() => setShowMenu(true)}
           desactivado={false}
@@ -143,11 +125,11 @@ function App() {
         />
       )}
 
+      {/* MODAL DE SELECCIÓN CON 3 OPCIONES */}
       {showMenu && (
         <div className="avatar-menu-overlay" onClick={() => setShowMenu(false)}>
           <div className="avatar-menu" onClick={(e) => e.stopPropagation()}>
-            <h3>✨ Elige tu Mascota ✨</h3>
-
+            <h3>¿Quién quieres ser hoy?</h3>
             <div className="avatar-grid">
               <div
                 className={`avatar-option ${skin === "original" ? "selected" : ""}`}
@@ -156,30 +138,29 @@ function App() {
                   setShowMenu(false);
                 }}
               >
-                <img src={imgFeliz} alt="Original" className="preview-normal" />
-                <span className="avatar-name">Tama</span>
+                <img src={imgFeliz} alt="Tama" />
+                <span>Tama</span>
               </div>
-
               <div
-                className={`avatar-option ${skin === "dracula" ? "selected" : ""}`}
+                className={`avatar-option ${skin === "vampiro" ? "selected" : ""}`}
                 onClick={() => {
-                  setSkin("dracula");
+                  setSkin("vampiro");
                   setShowMenu(false);
                 }}
               >
-                {/* PREVIEW DEL MENÚ - CORREGIDO */}
-                <div
-                  className="preview-dracula-animated"
-                  style={{
-                    backgroundImage: `url(${imgDracula})`,
-                  }}
-                />
-                <span className="avatar-name">Vampiro</span>
+                <img src={imgVampiroIdle} alt="Sombrío" />
+                <span>Sombrío</span>
               </div>
-            </div>
-
-            <div style={{ marginTop: "20px" }}>
-              <small>¡Haz clic fuera para cerrar!</small>
+              <div
+                className={`avatar-option ${skin === "naranja" ? "selected" : ""}`}
+                onClick={() => {
+                  setSkin("naranja");
+                  setShowMenu(false);
+                }}
+              >
+                <img src={imgNaranjaIdle} alt="Naranja" />
+                <span>Naranjita</span>
+              </div>
             </div>
           </div>
         </div>
