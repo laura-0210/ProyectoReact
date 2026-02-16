@@ -12,7 +12,7 @@ app.add_middleware(
         "http://localhost:8001",
         "https://tu-app-en-vercel.vercel.app" # Reemplaza con tu URL real de Vercel
     ],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
