@@ -5,20 +5,20 @@ import { StatusScreen } from "./components/StatusScreen";
 import Controls from "./components/Controls";
 import Button from "./components/Button";
 
-// --- IMPORTS (Asegúrate de que los nombres coincidan con tu carpeta assets/sprites) ---
+// --- IMPORTS (Sincronizados con tus archivos) ---
 import imgTamaHappy from "./assets/sprites/happy.gif";
 import imgTamaNeutral from "./assets/sprites/neutral.jpeg";
 import imgTamaTriste from "./assets/sprites/triste.jpeg";
 import imgTamaMimir from "./assets/sprites/dormir.jpeg";
 
-import imgVampiroIdle from "./assets/sprites/gatofeliz.gif"; // gatofeliz.gif
-import imgVampiroNom from "./assets/sprites/gatonom.gif"; // gatonom.gif
-import imgVampiroPlay from "./assets/sprites/gatoplay.gif"; // gatoplay.gif
-import imgVampiroMimir from "./assets/sprites/gatomimir.gif"; // gatomimir.gif
+import imgBlancoIdle from "./assets/sprites/gatofeliz.gif";
+import imgBlancoNom from "./assets/sprites/gatonom.gif";
+import imgBlancoPlay from "./assets/sprites/gatoplay.gif";
+import imgBlancoMimir from "./assets/sprites/gatomimir.gif";
 
-import imgNaranjaIdle from "./assets/sprites/gatoidle.gif"; // gatoidle.gif
-import imgNaranjaPlay from "./assets/sprites/gatojuego.gif"; // gatojuego.gif
-import imgNaranjaMimir from "./assets/sprites/gatomimirnaranja.gif"; // gatomimirnaranja.gif
+import imgNaranjaIdle from "./assets/sprites/gatoidle.gif";
+import imgNaranjaPlay from "./assets/sprites/gatojuego.gif";
+import imgNaranjaMimir from "./assets/sprites/gatomimirnaranja.gif";
 
 import imgMuerte from "./assets/sprites/muerte3.jpeg";
 
@@ -32,7 +32,7 @@ function App() {
     durmiendo: false,
     is_alive: true,
   });
-  const [skin, setSkin] = useState<"original" | "vampiro" | "naranja">(
+  const [skin, setSkin] = useState<"original" | "Blanco" | "naranja">(
     "original",
   );
   const [showMenu, setShowMenu] = useState(false);
@@ -63,8 +63,12 @@ function App() {
     (type: "eating" | "playing") => {
       if (actionTimerRef.current !== null)
         window.clearTimeout(actionTimerRef.current);
+
       setCurrentAction(type);
-      let duration = skin === "naranja" && type === "playing" ? 1600 : 1000;
+
+      // Aumentamos a 1.5s para que te dé tiempo a ver el GIF bien
+      let duration = skin === "naranja" && type === "playing" ? 2000 : 1500;
+
       actionTimerRef.current = window.setTimeout(() => {
         setCurrentAction(null);
         actionTimerRef.current = null;
@@ -76,31 +80,30 @@ function App() {
   const getCurrentImage = () => {
     if (!stats.is_alive) return imgMuerte;
 
-    // 1. Prioridad: Acción de COMER (Nom)
+    // 1. PRIORIDAD TOTAL: ACCIONES (Comer/Jugar)
     if (currentAction === "eating") {
-      if (skin === "vampiro") return imgVampiroNom; // gatonom.gif
-      if (skin === "naranja") return imgNaranjaPlay; // Naranja usa jugar (no tiene comer)
+      if (skin === "Blanco") return imgBlancoNom; // gatonom.gif
+      if (skin === "naranja") return imgNaranjaPlay; // Cambiado a Play para que SE VEA el cambio
       return imgTamaHappy;
     }
 
-    // 2. Prioridad: Acción de JUGAR
     if (currentAction === "playing") {
-      if (skin === "vampiro") return imgVampiroPlay; // gatoplay.gif
+      if (skin === "Blanco") return imgBlancoPlay; // gatoplay.gif
       if (skin === "naranja") return imgNaranjaPlay; // gatojuego.gif
       return imgTamaHappy;
     }
 
-    // 3. Prioridad: DORMIR (Solo si no hay acción activa)
+    // 2. PRIORIDAD SECUNDARIA: DORMIR
     if (stats.durmiendo) {
-      if (skin === "vampiro") return imgVampiroMimir; // gatomimir.gif
+      if (skin === "Blanco") return imgBlancoMimir; // gatomimir.gif
       if (skin === "naranja") return imgNaranjaMimir; // gatomimirnaranja.gif
       return imgTamaMimir;
     }
 
-    // 4. Estado IDLE (Reposo)
+    // 3. ESTADO POR DEFECTO (IDLE)
     switch (skin) {
-      case "vampiro":
-        return imgVampiroIdle; // gatofeliz.gif
+      case "Blanco":
+        return imgBlancoIdle; // gatofeliz.gif
       case "naranja":
         return imgNaranjaIdle; // gatoidle.gif
       default:
@@ -121,7 +124,7 @@ function App() {
         />
         <div style={{ marginTop: "20px" }}>
           <Button
-            texto="Cambio de personaje"
+            texto="Cambiar personaje"
             color="lila-button"
             onClick={() => setShowMenu(true)}
             desactivado={false}
@@ -156,7 +159,7 @@ function App() {
       {showMenu && (
         <div className="menu-overlay" onClick={() => setShowMenu(false)}>
           <div className="menu-card" onClick={(e) => e.stopPropagation()}>
-            <h2 className="menu-title">Vincular Alma</h2>
+            <h2 className="menu-title">Elegir personaje</h2>
             <div className="character-grid">
               <div
                 className={`char-card ${skin === "original" ? "active" : ""}`}
@@ -166,19 +169,19 @@ function App() {
                 }}
               >
                 <div className="char-preview">
-                  <img src={imgTamaNeutral} />
+                  <img src={imgTamaNeutral} alt="Tama" />
                 </div>
                 <span>TAMA</span>
               </div>
               <div
-                className={`char-card ${skin === "vampiro" ? "active" : ""}`}
+                className={`char-card ${skin === "Blanco" ? "active" : ""}`}
                 onClick={() => {
-                  setSkin("vampiro");
+                  setSkin("Blanco");
                   setShowMenu(false);
                 }}
               >
                 <div className="char-preview">
-                  <img src={imgVampiroIdle} />
+                  <img src={imgBlancoIdle} alt="Blanco" />
                 </div>
                 <span>BLANCO</span>
               </div>
@@ -190,7 +193,7 @@ function App() {
                 }}
               >
                 <div className="char-preview">
-                  <img src={imgNaranjaIdle} />
+                  <img src={imgNaranjaIdle} alt="Naranja" />
                 </div>
                 <span>NARANJA</span>
               </div>
