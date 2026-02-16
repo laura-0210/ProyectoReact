@@ -1,22 +1,16 @@
 services:
- 
   mi-app:
-   
     build: ./ProyectoReact
     ports:
       - "8001:8001"
     volumes:
-
       - ./ProyectoReact:/app
- 
+
       - /app/node_modules
     environment:
-     
       - CHOKIDAR_USEPOLLING=true
 
-
   pyfast:
-   
     build: ./backend
     ports:
       - "8000:8000"
